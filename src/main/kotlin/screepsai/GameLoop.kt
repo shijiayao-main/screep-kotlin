@@ -1,10 +1,26 @@
 package screepsai
 
 
-import screeps.api.*
+import screeps.api.Creep
+import screeps.api.FIND_MY_STRUCTURES
+import screeps.api.FIND_SOURCES
+import screeps.api.Game
+import screeps.api.Memory
+import screeps.api.Room
+import screeps.api.STRUCTURE_TOWER
+import screeps.api.WORK
+import screeps.api.compareTo
+import screeps.api.get
 import screeps.api.structures.StructureTower
+import screeps.api.values
 import screeps.utils.unsafe.delete
-import screepsai.roles.*
+import screepsai.roles.CreepRole
+import screepsai.roles.Role
+import screepsai.roles.complete
+import screepsai.roles.getRole
+import screepsai.roles.setRole
+import screepsai.roles.spawnerId
+import kotlin.collections.set
 
 fun getCreepsByRole(): Map<CreepRole, Map<Room, List<Creep>>> {
 

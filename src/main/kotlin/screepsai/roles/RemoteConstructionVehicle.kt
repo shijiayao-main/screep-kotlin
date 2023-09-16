@@ -1,6 +1,20 @@
 package screepsai.roles
 
-import screeps.api.*
+import screeps.api.ConstructionSite
+import screeps.api.Creep
+import screeps.api.ERR_FULL
+import screeps.api.ERR_NOT_ENOUGH_ENERGY
+import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_CONSTRUCTION_SITES
+import screeps.api.FIND_MY_SPAWNS
+import screeps.api.FIND_SOURCES
+import screeps.api.Flag
+import screeps.api.FlagMemory
+import screeps.api.Game
+import screeps.api.OK
+import screeps.api.RESOURCE_ENERGY
+import screeps.api.compareTo
+import screeps.api.get
 import screeps.utils.memory.memory
 import screepsai.utils.getPathToTarget
 import kotlin.math.abs

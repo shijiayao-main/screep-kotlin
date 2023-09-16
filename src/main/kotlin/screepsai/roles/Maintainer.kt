@@ -1,6 +1,14 @@
 package screepsai.roles
 
-import screeps.api.*
+import screeps.api.Creep
+import screeps.api.ERR_NOT_ENOUGH_ENERGY
+import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_STRUCTURES
+import screeps.api.OK
+import screeps.api.RESOURCE_ENERGY
+import screeps.api.STRUCTURE_RAMPART
+import screeps.api.STRUCTURE_WALL
+import screeps.api.compareTo
 
 class Maintainer(creep: Creep) : Role(creep) {
     override fun run() {

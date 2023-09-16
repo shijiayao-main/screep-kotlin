@@ -1,10 +1,34 @@
 package screepsai
 
-import screeps.api.*
+import screeps.api.ATTACK
+import screeps.api.BodyPartConstant
+import screeps.api.CARRY
+import screeps.api.CLAIM
+import screeps.api.Creep
+import screeps.api.ERR_BUSY
+import screeps.api.ERR_NOT_ENOUGH_ENERGY
+import screeps.api.FIND_MY_SPAWNS
+import screeps.api.Flag
+import screeps.api.Game
+import screeps.api.HEAL
+import screeps.api.MOVE
+import screeps.api.Memory
+import screeps.api.OK
+import screeps.api.RANGED_ATTACK
+import screeps.api.Record
+import screeps.api.Room
+import screeps.api.TOUGH
+import screeps.api.WORK
+import screeps.api.component1
+import screeps.api.component2
+import screeps.api.get
+import screeps.api.iterator
 import screeps.api.structures.StructureSpawn
+import screeps.api.values
 import screeps.utils.isEmpty
 import screeps.utils.unsafe.delete
-import screepsai.roles.*
+import screepsai.roles.CreepRole
+import screepsai.roles.setRole
 
 val BODYPART_COST = hashMapOf(
     MOVE to 50,

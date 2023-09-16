@@ -1,6 +1,12 @@
 package screepsai.roles
 
-import screeps.api.*
+import screeps.api.Creep
+import screeps.api.ERR_NOT_ENOUGH_ENERGY
+import screeps.api.ERR_NOT_FOUND
+import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.OK
+import screeps.api.RESOURCE_ENERGY
+import screeps.api.compareTo
 
 class Upgrader(creep: Creep) : Role(creep) {
     override fun run() {

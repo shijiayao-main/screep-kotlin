@@ -1,6 +1,15 @@
 package screepsai.roles
 
-import screeps.api.*
+import screeps.api.Creep
+import screeps.api.CreepMemory
+import screeps.api.ERR_NOT_FOUND
+import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_DROPPED_RESOURCES
+import screeps.api.OK
+import screeps.api.RESOURCE_ENERGY
+import screeps.api.STRUCTURE_CONTAINER
+import screeps.api.STRUCTURE_ROAD
+import screeps.api.ScreepsReturnCode
 import screeps.utils.memory.memory
 import kotlin.math.abs
 

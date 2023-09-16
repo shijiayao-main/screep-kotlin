@@ -1,6 +1,14 @@
 package screepsai.utils
 
-import screeps.api.*
+import screeps.api.CostMatrix
+import screeps.api.FIND_STRUCTURES
+import screeps.api.Game
+import screeps.api.PathFinder
+import screeps.api.RoomPosition
+import screeps.api.STRUCTURE_CONTAINER
+import screeps.api.STRUCTURE_RAMPART
+import screeps.api.STRUCTURE_ROAD
+import screeps.api.get
 import screeps.utils.unsafe.jsObject
 
 fun getRoomCostMatrix(roomName: String): CostMatrix {

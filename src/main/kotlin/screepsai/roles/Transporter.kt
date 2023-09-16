@@ -1,7 +1,19 @@
 package screepsai.roles
 
-import screeps.api.*
-import screeps.api.structures.*
+import screeps.api.Creep
+import screeps.api.ERR_NOT_ENOUGH_ENERGY
+import screeps.api.ERR_NOT_FOUND
+import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_MY_STRUCTURES
+import screeps.api.OK
+import screeps.api.RESOURCE_ENERGY
+import screeps.api.STRUCTURE_EXTENSION
+import screeps.api.STRUCTURE_SPAWN
+import screeps.api.STRUCTURE_STORAGE
+import screeps.api.STRUCTURE_TOWER
+import screeps.api.StoreOwner
+import screeps.api.compareTo
+import screeps.api.structures.Structure
 import kotlin.math.abs
 
 val FILLABLE_STRUCTURES = setOf(

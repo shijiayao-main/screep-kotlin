@@ -1,6 +1,13 @@
 package screepsai.roles
 
-import screeps.api.*
+import screeps.api.Creep
+import screeps.api.CreepMemory
+import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_SOURCES
+import screeps.api.Game
+import screeps.api.OK
+import screeps.api.RoomMemory
+import screeps.api.Source
 import screeps.utils.memory.memory
 
 var CreepMemory.energySource: String? by memory()

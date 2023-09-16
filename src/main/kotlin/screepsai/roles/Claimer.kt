@@ -1,9 +1,18 @@
 package screepsai.roles
 
-import screeps.api.*
+import screeps.api.Creep
+import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_CONSTRUCTION_SITES
+import screeps.api.Flag
+import screeps.api.FlagMemory
+import screeps.api.Game
+import screeps.api.OK
+import screeps.api.Room
+import screeps.api.STRUCTURE_SPAWN
+import screeps.api.get
 import screeps.api.structures.StructureController
 import screeps.utils.memory.memory
-import screepsai.utils.*
+import screepsai.utils.getPathToTarget
 
 var FlagMemory.spawnerId: String? by memory()
 
