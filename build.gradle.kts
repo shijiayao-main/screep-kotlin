@@ -3,8 +3,9 @@ import java.net.URL
 import java.util.*
 
 plugins {
-    kotlin("js") version "1.9.10"
-//    kotlin("js") version "1.8.22"
+//    kotlin("js") version "1.9.10"
+//    kotlin("js") version "1.7.22"
+    kotlin("js") version "1.8.22"
 //    kotlin("multiplatform") version "1.9.10"
 }
 
@@ -25,24 +26,29 @@ val screepsHost: String? by project
 val screepsBranch: String? by project
 val branch = screepsBranch ?: "default"
 val host = screepsHost ?: "https://screeps.com"
+
 val minifiedJsDirectory: String = File(buildDir, "minified-js").absolutePath
+//val minifiedJsDirectory: String = File(buildDir, "compileSync/js/main/productionExecutable/kotlin").absolutePath
+//val minifiedJsDirectory: String = File(buildDir, "js/packages/screeps-kotlin/kotlin-dce").absolutePath
 
 kotlin {
-    js(IR) {
+    js(LEGACY) {
         compilations.all {
             compileTaskProvider.configure {
-                compilerOptions.freeCompilerArgs.add("-Xerror-tolerance-policy=SYNTAX")
-//                compilerOptions.freeCompilerArgs.add("-Xir-minimized-member-names=false")
                 destinationDirectory.file(minifiedJsDirectory)
+                compilerOptions.freeCompilerArgs.addAll(
+                    "-Xerror-tolerance-policy=SYNTAX",
+                    "-Xir-minimized-member-names=false"
+                )
             }
         }
 //        useCommonJs()
         browser {
-//            @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl::class)
-//            distribution(Action {
-//                directory = file(minifiedJsDirectory)
-////                outputDirectory.set(file(minifiedJsDirectory))
-//            })
+            @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl::class)
+            distribution(Action {
+                directory = file(minifiedJsDirectory)
+//                outputDirectory.set(file(minifiedJsDirectory))
+            })
             @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDceDsl::class)
             dceTask(Action {
 //                dceOptions.outputDirectory = minifiedJsDirectory
