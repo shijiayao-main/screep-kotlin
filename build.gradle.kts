@@ -3,8 +3,8 @@ import java.net.URL
 import java.util.*
 
 plugins {
-//    kotlin("js") version "1.9.10"
-    kotlin("js") version "1.6.21"
+    kotlin("js") version "1.9.10"
+//    kotlin("js") version "1.8.22"
 //    kotlin("multiplatform") version "1.9.10"
 }
 
@@ -28,7 +28,14 @@ val host = screepsHost ?: "https://screeps.com"
 val minifiedJsDirectory: String = File(buildDir, "minified-js").absolutePath
 
 kotlin {
-    js {
+    js(IR) {
+        compilations.all {
+            compileTaskProvider.configure {
+                compilerOptions.freeCompilerArgs.add("-Xerror-tolerance-policy=SYNTAX")
+//                compilerOptions.freeCompilerArgs.add("-Xir-minimized-member-names=false")
+                destinationDirectory.file(minifiedJsDirectory)
+            }
+        }
 //        useCommonJs()
         browser {
 //            @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl::class)
@@ -37,19 +44,20 @@ kotlin {
 ////                outputDirectory.set(file(minifiedJsDirectory))
 //            })
             @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDceDsl::class)
-            dceTask {
-                dceOptions.outputDirectory = minifiedJsDirectory
+            dceTask(Action {
+//                dceOptions.outputDirectory = minifiedJsDirectory
 
                 keep(
                     "${project.name}.loop"
                 )
-            }
+            })
 
 //            testTask {
 //                useMocha()
 //            }
         }
         binaries.executable()
+//        nodejs()
     }
 
 //    sourceSets {
