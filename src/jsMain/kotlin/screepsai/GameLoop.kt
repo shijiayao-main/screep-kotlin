@@ -61,8 +61,7 @@ fun runRoom(room: Room, creepsByRoleAndRoom: Map<CreepRole, Map<Room, List<Creep
 
     if (minCreepsInUnfilledRole != 1000) {
         console.log("Least populated unfilled role in ${room} only has ${minCreepsInUnfilledRole} creeps")
-    }
-    else {
+    } else {
         console.log("All roles filled in ${room}")
     }
     var prioritySpawnActive = false
@@ -70,8 +69,7 @@ fun runRoom(room: Room, creepsByRoleAndRoom: Map<CreepRole, Map<Room, List<Creep
         console.log("${room} spawning priority harvester")
         spawnNewCreep(CreepRole.HARVESTER, room)
         prioritySpawnActive = true
-    }
-    else if ((creepsByRole[CreepRole.TRANSPORTER]?.size ?: 0) < roleMemberCount[CreepRole.TRANSPORTER]) {
+    } else if ((creepsByRole[CreepRole.TRANSPORTER]?.size ?: 0) < roleMemberCount[CreepRole.TRANSPORTER]) {
         console.log("${room} spawning priority transporter")
         spawnNewCreep(CreepRole.TRANSPORTER, room)
         prioritySpawnActive = true
@@ -92,8 +90,7 @@ fun runRoom(room: Room, creepsByRoleAndRoom: Map<CreepRole, Map<Room, List<Creep
         if (creepCount < maxCreepsInRole && !prioritySpawnActive) {
             if (creepCount <= minCreepsInUnfilledRole) {
                 spawnNewCreep(creepRole, room)
-            }
-            else {
+            } else {
                 console.log("Not spawning new ${creepRole} since there are ${creeps.size} and another role only has ${minCreepsInUnfilledRole}")
             }
         }
@@ -101,16 +98,13 @@ fun runRoom(room: Room, creepsByRoleAndRoom: Map<CreepRole, Map<Room, List<Creep
         for (creep in creeps) {
             try {
                 Role.build(creepRole, creep).run()
-            }
-            catch (error: IllegalArgumentException) {
+            } catch (error: IllegalArgumentException) {
                 if (creep.body.any { it.type == WORK }) {
                     creep.setRole(CreepRole.UPGRADER)
-                }
-                else {
+                } else {
                     creep.setRole(CreepRole.TRANSPORTER)
                 }
-            }
-            catch (error: Exception) {
+            } catch (error: Exception) {
                 console.log("${creep.name} failed to run due to error: ${error}")
             }
         }
@@ -134,8 +128,7 @@ fun claimNewRooms(creepsByRoomAndRole: Map<CreepRole, Map<Room, List<Creep>>>) {
                 CreepRole.CLAIMER, nextRoomFlag
             )
             ?: return console.log("No claimer creep could be located or created")
-    }
-    else {
+    } else {
         val builders =
             creepsByRoomAndRole[CreepRole.REMOTE_CONSTRUCTION]?.flatMap { it.value }?.toMutableList() ?: mutableListOf()
 

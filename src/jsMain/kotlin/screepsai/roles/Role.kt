@@ -51,13 +51,13 @@ abstract class Role(val creep: Creep) {
          */
         fun build(creepRole: CreepRole, creep: Creep): Role {
             return when (creepRole) {
-                CreepRole.UNASSIGNED          -> throw IllegalArgumentException("Cannot process a creep without a role")
-                CreepRole.HARVESTER           -> Harvester(creep)
-                CreepRole.UPGRADER            -> Upgrader(creep)
-                CreepRole.TRANSPORTER         -> Transporter(creep)
-                CreepRole.BUILDER             -> Builder(creep)
-                CreepRole.MAINTAINER          -> Maintainer(creep)
-                CreepRole.CLAIMER             -> Claimer(creep)
+                CreepRole.UNASSIGNED -> throw IllegalArgumentException("Cannot process a creep without a role")
+                CreepRole.HARVESTER -> Harvester(creep)
+                CreepRole.UPGRADER -> Upgrader(creep)
+                CreepRole.TRANSPORTER -> Transporter(creep)
+                CreepRole.BUILDER -> Builder(creep)
+                CreepRole.MAINTAINER -> Maintainer(creep)
+                CreepRole.CLAIMER -> Claimer(creep)
                 CreepRole.REMOTE_CONSTRUCTION -> RemoteConstructionVehicle(creep)
             }
         }
@@ -106,8 +106,7 @@ abstract class Role(val creep: Creep) {
 
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(energySource.pos.x, energySource.pos.y)
-        }
-        else if (status != OK) {
+        } else if (status != OK) {
             error("Gather failed with code $status")
         }
         return status

@@ -41,9 +41,9 @@ fun repairWalls(tower: StructureTower) {
     }
 
     when (val code = tower.repair(wall)) {
-        OK                    -> return
+        OK -> return
         ERR_NOT_ENOUGH_ENERGY -> console.log("${tower} failed to repair walls: out of energy")
-        else                  -> console.log("${tower} failed to repair walls: ${code}")
+        else -> console.log("${tower} failed to repair walls: ${code}")
     }
 }
 
@@ -55,8 +55,8 @@ fun runTower(tower: StructureTower) {
 
 
     when (val code = tower.attack(badGuy)) {
-        OK                    -> console.log("${tower} attacking ${badGuy}")
+        OK -> console.log("${tower} attacking ${badGuy}")
         ERR_NOT_ENOUGH_ENERGY -> console.log("${tower} failed to attack ${badGuy}: out of energy")
-        else                  -> console.log("${tower} failed to attack ${badGuy}: ${code}")
+        else -> console.log("${tower} failed to attack ${badGuy}: ${code}")
     }
 }

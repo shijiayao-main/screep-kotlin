@@ -3,7 +3,6 @@ import java.net.URL
 import java.util.*
 
 plugins {
-//    kotlin("js") version "1.8.22"
     kotlin("multiplatform") version "1.8.22"
 }
 
@@ -11,11 +10,6 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
-
-//dependencies {
-//    implementation("io.github.exav:screeps-kotlin-types:1.13.0")
-////    implementation("ch.delconte.screeps-kotlin:screeps-kotlin-types:1.12.0")
-//}
 
 val screepsUser: String? by project
 val screepsPassword: String? by project
@@ -26,8 +20,6 @@ val branch = screepsBranch ?: "default"
 val host = screepsHost ?: "https://screeps.com"
 
 val minifiedJsDirectory: String = File(buildDir, "minified-js").absolutePath
-//val minifiedJsDirectory: String = File(buildDir, "compileSync/js/main/productionExecutable/kotlin").absolutePath
-//val minifiedJsDirectory: String = File(buildDir, "js/packages/screeps-kotlin/kotlin-dce").absolutePath
 
 kotlin {
     js(LEGACY) {
@@ -40,35 +32,25 @@ kotlin {
                 )
             }
         }
-//        useCommonJs()
         browser {
             @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl::class)
             distribution(Action {
                 directory = file(minifiedJsDirectory)
-//                outputDirectory.set(file(minifiedJsDirectory))
             })
             @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDceDsl::class)
             dceTask(Action {
-//                dceOptions.outputDirectory = minifiedJsDirectory
-
                 keep(
                     "${project.name}.loop"
                 )
             })
-
-//            testTask {
-//                useMocha()
-//            }
         }
         binaries.executable()
-//        nodejs()
     }
 
     sourceSets {
         val jsMain by getting {
             dependencies {
                 implementation("io.github.exav:screeps-kotlin-types:1.13.0")
-//    implementation("ch.delconte.screeps-kotlin:screeps-kotlin-types:1.12.0")
             }
         }
     }
@@ -150,6 +132,5 @@ tasks.register("deploy") {
             logger.error(body)
         }
         connection.disconnect()
-
     }
 }

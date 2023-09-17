@@ -20,7 +20,8 @@ class Maintainer(creep: Creep) : Role(creep) {
                     state = CreepState.DO_WORK
                 }
             }
-            CreepState.DO_WORK    -> {
+
+            CreepState.DO_WORK -> {
                 repairBuildings()
             }
         }
@@ -37,8 +38,7 @@ class Maintainer(creep: Creep) : Role(creep) {
         val code = creep.withdraw(storage, RESOURCE_ENERGY)
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(storage)
-        }
-        else if (code != OK) {
+        } else if (code != OK) {
             error("Couldn't withdraw from storage due to error: $code")
         }
     }
@@ -78,13 +78,11 @@ class Maintainer(creep: Creep) : Role(creep) {
 
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(building)
-        }
-        else if (status == ERR_NOT_ENOUGH_ENERGY) {
+        } else if (status == ERR_NOT_ENOUGH_ENERGY) {
             info("Out of energy", say = true)
             state = CreepState.GET_ENERGY
             return
-        }
-        else if (status != OK) {
+        } else if (status != OK) {
             error("Repair failed with code $status", say = true)
         }
 

@@ -49,9 +49,9 @@ class Claimer(creep: Creep) : Role(creep) {
         }
 
         when (val code = creep.claimController(targetController)) {
-            OK               -> info("${targetController.room} claimed!")
+            OK -> info("${targetController.room} claimed!")
             ERR_NOT_IN_RANGE -> creep.moveTo(targetController)
-            else             -> error("Claiming ${targetController.room} failed: ${code}")
+            else -> error("Claiming ${targetController.room} failed: ${code}")
         }
     }
 

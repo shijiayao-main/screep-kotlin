@@ -27,8 +27,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
     override fun run() {
         if (targetFlag == null) {
             warning("No target to work with!")
-        }
-        else {
+        } else {
             if (targetFlag.room?.find(FIND_MY_SPAWNS)?.firstOrNull() != null) {
                 info("Spawn construction completed!")
                 targetFlag.memory.complete = true
@@ -42,8 +41,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
 
         if (state == CreepState.GET_ENERGY) {
             getEnergy()
-        }
-        else if (state == CreepState.DO_WORK) {
+        } else if (state == CreepState.DO_WORK) {
             buildBuildings()
         }
     }
@@ -60,8 +58,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
         val code = creep.withdraw(storage, RESOURCE_ENERGY)
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(storage)
-        }
-        else if (code != OK) {
+        } else if (code != OK) {
             error("Couldn't withdraw from storage due to error: $code")
         }
     }
@@ -76,12 +73,10 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
         if (code == ERR_NOT_IN_RANGE) {
             if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 50) {
                 state = CreepState.DO_WORK
-            }
-            else {
+            } else {
                 creep.moveTo(energySource)
             }
-        }
-        else if (code != OK) {
+        } else if (code != OK) {
             error("Gather failed with code ${code}")
         }
 
@@ -104,17 +99,14 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             if (creep.room != constructionSite.room) {
                 creep.move(creep.pos.getDirectionTo(getPathToTarget(creep.pos, constructionSite.pos)[0]))
-            }
-            else {
+            } else {
                 creep.moveTo(constructionSite)
             }
-        }
-        else if (status == ERR_NOT_ENOUGH_ENERGY) {
+        } else if (status == ERR_NOT_ENOUGH_ENERGY) {
             info("Out of energy", say = true)
             state = CreepState.GET_ENERGY
             return
-        }
-        else if (status != OK) {
+        } else if (status != OK) {
             error("Build failed with code $status", say = true)
         }
 
@@ -126,8 +118,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
     private fun findConstructionSite(): ConstructionSite? {
         return if (targetFlag != null && creep.room != targetFlag.room) {
             targetFlag.room?.find(FIND_CONSTRUCTION_SITES)?.firstOrNull()
-        }
-        else {
+        } else {
             creep.room.find(FIND_CONSTRUCTION_SITES)
                 .minByOrNull { abs(it.pos.x - creep.pos.x) + abs(it.pos.y - creep.pos.y) }
         }
@@ -140,18 +131,15 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
 
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawner)
-        }
-        else if (code == ERR_NOT_ENOUGH_ENERGY) {
+        } else if (code == ERR_NOT_ENOUGH_ENERGY) {
             info("Out of energy", say = true)
             state = CreepState.GET_ENERGY
             return
-        }
-        else if (code == ERR_FULL) {
+        } else if (code == ERR_FULL) {
             info("Spawner full of energy, dropping energy for other creeps to use")
             creep.drop(RESOURCE_ENERGY)
             state = CreepState.GET_ENERGY
-        }
-        else if (code != OK) {
+        } else if (code != OK) {
             error("Transfer failed with code ${code}", say = true)
         }
 

@@ -43,8 +43,7 @@ class Harvester(creep: Creep) : Role(creep) {
                 assignedSource = energySource.value
                 creep.room.memory.energySourceAssignments[energySource.index] = creep.id
                 return assignedSource
-            }
-            else {
+            } else {
                 debug("Energy source already taken, checking other source(s)")
             }
         }
@@ -64,8 +63,7 @@ class Harvester(creep: Creep) : Role(creep) {
 
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(energySource.pos.x, energySource.pos.y)
-        }
-        else if (status != OK) {
+        } else if (status != OK) {
             error("Gather failed with code $status")
         }
     }

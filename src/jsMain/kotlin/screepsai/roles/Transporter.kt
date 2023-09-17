@@ -29,7 +29,8 @@ class Transporter(creep: Creep) : Role(creep) {
             CreepState.GET_ENERGY -> {
                 getEnergy()
             }
-            CreepState.DO_WORK    -> {
+
+            CreepState.DO_WORK -> {
                 storeEnergy()
             }
         }
@@ -52,8 +53,7 @@ class Transporter(creep: Creep) : Role(creep) {
             val code = creep.withdraw(storage, RESOURCE_ENERGY)
             if (code == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage.pos.x, storage.pos.y)
-            }
-            else if (status != OK) {
+            } else if (status != OK) {
                 error("Storage withdraw failed with code $status")
             }
         }
@@ -72,11 +72,11 @@ class Transporter(creep: Creep) : Role(creep) {
         }.groupBy {
             when (it.unsafeCast<Structure>().structureType) {
                 // TODO: Determine priority level more intelligently
-                STRUCTURE_SPAWN     -> 1
+                STRUCTURE_SPAWN -> 1
                 STRUCTURE_EXTENSION -> 1
-                STRUCTURE_TOWER     -> 2
-                STRUCTURE_STORAGE   -> 3
-                else                -> 4
+                STRUCTURE_TOWER -> 2
+                STRUCTURE_STORAGE -> 3
+                else -> 4
             }
         }
 
@@ -94,8 +94,7 @@ class Transporter(creep: Creep) : Role(creep) {
         val structureType = (fillableStructures[0] as Structure).structureType
         val fillableStructure = if (structureType == STRUCTURE_TOWER) {
             fillableStructures.maxByOrNull { it.store.getFreeCapacity(RESOURCE_ENERGY) ?: 0 }
-        }
-        else {
+        } else {
             fillableStructures.minByOrNull { abs(it.pos.x - creep.pos.x) + abs(it.pos.y - creep.pos.y) }
         }
 
@@ -108,13 +107,11 @@ class Transporter(creep: Creep) : Role(creep) {
 
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(fillableStructure)
-        }
-        else if (status == ERR_NOT_ENOUGH_ENERGY) {
+        } else if (status == ERR_NOT_ENOUGH_ENERGY) {
             info("Out of energy", say = true)
             state = CreepState.GET_ENERGY
             return
-        }
-        else if (status != OK) {
+        } else if (status != OK) {
             error("Transfer failed with code $status", say = true)
         }
 

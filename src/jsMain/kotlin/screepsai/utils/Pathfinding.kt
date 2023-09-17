@@ -22,11 +22,9 @@ fun getRoomCostMatrix(roomName: String): CostMatrix {
     for (structure in room.find(FIND_STRUCTURES)) {
         if (structure.structureType == STRUCTURE_ROAD) {
             costMatrix.set(structure.pos.x, structure.pos.y, 1)
-        }
-        else if (structure.structureType == STRUCTURE_RAMPART && structure.my) {
+        } else if (structure.structureType == STRUCTURE_RAMPART && structure.my) {
             console.log("${structure} is a rampart")
-        }
-        else if (structure.structureType != STRUCTURE_CONTAINER) {
+        } else if (structure.structureType != STRUCTURE_CONTAINER) {
             // Can't walk through non-walkable buildings
             console.log("${structure} is not walkable")
             costMatrix.set(structure.pos.x, structure.pos.y, 750)
