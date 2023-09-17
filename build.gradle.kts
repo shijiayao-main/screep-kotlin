@@ -56,15 +56,10 @@ kotlin {
     }
 }
 
-val processDceKotlinJs1 by tasks.registering {
-    dependsOn(tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJsDce::class.java))
-}
-
 fun String.encodeBase64() = Base64.getEncoder().encodeToString(this.toByteArray())
 
 tasks.register("deploy") {
     group = "screeps"
-    dependsOn(processDceKotlinJs1)
 
     doFirst { // use doFirst to avoid running this code in configuration phase
         if (screepsToken == null && (screepsUser == null || screepsPassword == null)) {
@@ -133,4 +128,8 @@ tasks.register("deploy") {
         }
         connection.disconnect()
     }
+}
+
+tasks.clean {
+    delete("kotlin-js-store")
 }
