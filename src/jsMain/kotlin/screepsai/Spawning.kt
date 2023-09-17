@@ -108,7 +108,7 @@ fun spawnCreep(spawn: StructureSpawn, role: CreepRole, body: Body): Creep? {
     val code = spawn.spawnCreep(body.parts, newName)
     when (code) {
         OK -> console.log("spawning $newName with body ${body.parts}")
-        ERR_BUSY -> console.log("Spawner ${spawn} in ${spawn.room} is busy")
+        ERR_BUSY -> console.log("Spawner $spawn in ${spawn.room} is busy")
         ERR_NOT_ENOUGH_ENERGY -> console.log("Not enough energy to spawn a new ${role.name}")
         else -> console.log("Unhandled error code $code")
     }
@@ -131,7 +131,7 @@ fun spawnNewCreep(
     val body = try {
         getBody(role, room.energyAvailable)
     } catch (error: NoSuchElementException) {
-        console.log("Couldn't determine body for ${role} in ${room} with ${room.energyAvailable} energy")
+        console.log("Couldn't determine body for $role in $room with ${room.energyAvailable} energy")
         return null
     }
 
@@ -143,16 +143,15 @@ fun spawnNewCreep(
             return creep
         }
     }
-    console.log("Unable to spawn new ${role} creep in ${room}")
+    console.log("Unable to spawn new $role creep in $room")
     return null
 }
-
 
 fun spawnCrossRoomCreep(role: CreepRole, targetFlag: Flag): Creep? {
     val body = when (role) {
         CreepRole.CLAIMER -> CLAIMER_BODIES[0]
         CreepRole.REMOTE_CONSTRUCTION -> REMOTE_CONSTRUCTION_BODIES[0]
-        else -> throw IllegalArgumentException("${role} not supported yet")
+        else -> throw IllegalArgumentException("$role not supported yet")
     }
 
     val spawner = Game.spawns.values.filter { it.room.energyAvailable > body.cost }.minByOrNull {
@@ -160,7 +159,7 @@ fun spawnCrossRoomCreep(role: CreepRole, targetFlag: Flag): Creep? {
     }
 
     if (spawner == null) {
-        console.log("No spawners available to create a new ${role}!")
+        console.log("No spawners available to create a new $role!")
         return null
     }
 
@@ -168,7 +167,7 @@ fun spawnCrossRoomCreep(role: CreepRole, targetFlag: Flag): Creep? {
 }
 
 fun houseKeeping(creeps: Record<String, Creep>) {
-    if (Game.creeps.isEmpty()) return  // this is needed because Memory.creeps is undefined
+    if (Game.creeps.isEmpty()) return // this is needed because Memory.creeps is undefined
 
     for ((creepName, _) in Memory.creeps) {
         if (creeps[creepName] == null) {

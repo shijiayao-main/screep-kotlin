@@ -6,7 +6,6 @@ import screepsai.gameLoop
  *
  * must not be removed by DCE
  */
-@JsExport
 @Suppress("unused")
 fun loop() {
     gameLoop()

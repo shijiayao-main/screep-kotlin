@@ -77,7 +77,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
                 creep.moveTo(energySource)
             }
         } else if (code != OK) {
-            error("Gather failed with code ${code}")
+            error("Gather failed with code $code")
         }
 
         if ((creep.store.getFreeCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
@@ -140,12 +140,11 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
             creep.drop(RESOURCE_ENERGY)
             state = CreepState.GET_ENERGY
         } else if (code != OK) {
-            error("Transfer failed with code ${code}", say = true)
+            error("Transfer failed with code $code", say = true)
         }
 
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) <= 0) {
             state = CreepState.GET_ENERGY
         }
     }
-
 }

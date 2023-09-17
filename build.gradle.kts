@@ -1,9 +1,11 @@
+import com.diffplug.gradle.spotless.SpotlessExtension
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
 plugins {
     kotlin("multiplatform") version "1.8.22"
+    id("com.diffplug.spotless") version "6.11.0"
 }
 
 repositories {
@@ -133,3 +135,38 @@ tasks.register("deploy") {
 tasks.clean {
     delete("kotlin-js-store")
 }
+
+spotless {
+    kotlin {
+        target("**/*.kt")
+        ktlint("0.43.0")
+    }
+}
+
+//subprojects {
+//    project.afterEvaluate {
+//        apply(plugin = "com.diffplug.spotless")
+//
+//        if (project.file("build.gradle").exists().not() && project.file("build.gradle.kts").exists().not()) {
+//            return@afterEvaluate
+//        }
+//
+//        configure<SpotlessExtension>() {
+//            kotlin {
+//                target("**/*.kt")
+//                ktlint("0.43.0")
+//            }
+//            java {
+//                target("**/*.java")
+//                googleJavaFormat()
+//                indentWithSpaces(2)
+//                trimTrailingWhitespace()
+//                removeUnusedImports()
+//            }
+//            kotlinGradle {
+//                target("*.gradle.kts")
+//                ktlint("0.43.0")
+//            }
+//        }
+//    }
+//}

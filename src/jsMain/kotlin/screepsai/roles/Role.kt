@@ -37,12 +37,10 @@ val MAINTENANCE_REQUIRED_BUILDING_TYPES = setOf(
     STRUCTURE_CONTAINER,
 )
 
-
 fun getState(state: Int): CreepState {
     // TODO: Set up a map so this is faster/better
     return CreepState.values().firstOrNull { it.ordinal == state } ?: CreepState.GET_ENERGY
 }
-
 
 abstract class Role(val creep: Creep) {
     companion object {
@@ -115,7 +113,6 @@ abstract class Role(val creep: Creep) {
     abstract fun run()
 }
 
-
 // setRole and setRole are needed before any Role instances are set up
 // So set them as methods on the creep itself
 fun Creep.setRole(newRole: CreepRole) {
@@ -126,4 +123,3 @@ fun Creep.getRole(): CreepRole {
     // TODO: Set up a map so this is faster/better
     return CreepRole.values().firstOrNull { it.ordinal == memory.role } ?: CreepRole.UNASSIGNED
 }
-

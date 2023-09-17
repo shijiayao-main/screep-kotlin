@@ -69,7 +69,7 @@ class Maintainer(creep: Creep) : Role(creep) {
                     (ratio * (it.hitsMax / creep.store.getCapacity(RESOURCE_ENERGY)!!)).toInt()
                 }
             if (wall != null) {
-                info("Buildings well maintained, repairing ${wall} instead")
+                info("Buildings well maintained, repairing $wall instead")
                 building = wall
             }
         }

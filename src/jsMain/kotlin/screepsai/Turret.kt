@@ -13,7 +13,7 @@ import kotlin.math.abs
 
 fun repairWalls(tower: StructureTower) {
     if (tower.store.getUsedCapacity(RESOURCE_ENERGY) < 500) {
-        console.log("${tower} not repairing to conserve energy")
+        console.log("$tower not repairing to conserve energy")
         return
     }
     val walls = tower.room.find(FIND_STRUCTURES)
@@ -32,18 +32,18 @@ fun repairWalls(tower: StructureTower) {
     }
 
     if (wall.hits.toFloat() / maxWallHp.toFloat() > 0.9) {
-        console.log("${tower} not repairing since all walls are roughly same hp")
+        console.log("$tower not repairing since all walls are roughly same hp")
     }
 
     if (wall.structureType == STRUCTURE_RAMPART && wall.hits > 500000) {
-        console.log("${tower} not repairing since ramparts are healthy")
+        console.log("$tower not repairing since ramparts are healthy")
         return
     }
 
     when (val code = tower.repair(wall)) {
         OK -> return
-        ERR_NOT_ENOUGH_ENERGY -> console.log("${tower} failed to repair walls: out of energy")
-        else -> console.log("${tower} failed to repair walls: ${code}")
+        ERR_NOT_ENOUGH_ENERGY -> console.log("$tower failed to repair walls: out of energy")
+        else -> console.log("$tower failed to repair walls: $code")
     }
 }
 
@@ -53,10 +53,9 @@ fun runTower(tower: StructureTower) {
         tower.room.find(FIND_HOSTILE_CREEPS).minByOrNull { abs(it.pos.x - tower.pos.x) + abs(it.pos.y - tower.pos.y) }
             ?: return repairWalls(tower)
 
-
     when (val code = tower.attack(badGuy)) {
-        OK -> console.log("${tower} attacking ${badGuy}")
-        ERR_NOT_ENOUGH_ENERGY -> console.log("${tower} failed to attack ${badGuy}: out of energy")
-        else -> console.log("${tower} failed to attack ${badGuy}: ${code}")
+        OK -> console.log("$tower attacking $badGuy")
+        ERR_NOT_ENOUGH_ENERGY -> console.log("$tower failed to attack $badGuy: out of energy")
+        else -> console.log("$tower failed to attack $badGuy: $code")
     }
 }

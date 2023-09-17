@@ -37,13 +37,13 @@ class Claimer(creep: Creep) : Role(creep) {
 
     private fun claimRoom() {
         if (targetController == null || targetController.room != creep.room) {
-            warning("Not in room with controller, navigating to ${targetFlag} instead")
+            warning("Not in room with controller, navigating to $targetFlag instead")
             moveToFlag()
             return
         }
 
         if (targetController.my) {
-            info("${targetController} already claimed!")
+            info("$targetController already claimed!")
             setupRoom(targetController.room)
             return
         }
@@ -51,7 +51,7 @@ class Claimer(creep: Creep) : Role(creep) {
         when (val code = creep.claimController(targetController)) {
             OK -> info("${targetController.room} claimed!")
             ERR_NOT_IN_RANGE -> creep.moveTo(targetController)
-            else -> error("Claiming ${targetController.room} failed: ${code}")
+            else -> error("Claiming ${targetController.room} failed: $code")
         }
     }
 
@@ -64,7 +64,7 @@ class Claimer(creep: Creep) : Role(creep) {
         targetFlag.memory.spawnerId = spawner.id
 
         if (code == OK) {
-            info("${room} successfully initialized, construction may begin!")
+            info("$room successfully initialized, construction may begin!")
         }
     }
 }
