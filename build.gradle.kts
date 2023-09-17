@@ -3,10 +3,8 @@ import java.net.URL
 import java.util.*
 
 plugins {
-//    kotlin("js") version "1.9.10"
-//    kotlin("js") version "1.7.22"
-    kotlin("js") version "1.8.22"
-//    kotlin("multiplatform") version "1.9.10"
+//    kotlin("js") version "1.8.22"
+    kotlin("multiplatform") version "1.8.22"
 }
 
 repositories {
@@ -14,10 +12,10 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation("io.github.exav:screeps-kotlin-types:1.13.0")
-//    implementation("ch.delconte.screeps-kotlin:screeps-kotlin-types:1.12.0")
-}
+//dependencies {
+//    implementation("io.github.exav:screeps-kotlin-types:1.13.0")
+////    implementation("ch.delconte.screeps-kotlin:screeps-kotlin-types:1.12.0")
+//}
 
 val screepsUser: String? by project
 val screepsPassword: String? by project
@@ -66,14 +64,14 @@ kotlin {
 //        nodejs()
     }
 
-//    sourceSets {
-//        val jsMain by getting {
-//            dependencies {
-//                implementation("io.github.exav:screeps-kotlin-types:1.13.0")
-////    implementation("ch.delconte.screeps-kotlin:screeps-kotlin-types:1.12.0")
-//            }
-//        }
-//    }
+    sourceSets {
+        val jsMain by getting {
+            dependencies {
+                implementation("io.github.exav:screeps-kotlin-types:1.13.0")
+//    implementation("ch.delconte.screeps-kotlin:screeps-kotlin-types:1.12.0")
+            }
+        }
+    }
 }
 
 val processDceKotlinJs1 by tasks.registering {
