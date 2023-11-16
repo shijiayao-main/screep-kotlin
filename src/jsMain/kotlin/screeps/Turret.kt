@@ -1,4 +1,4 @@
-package screepsai
+package screeps
 
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.FIND_HOSTILE_CREEPS
@@ -17,7 +17,9 @@ fun repairWalls(tower: StructureTower) {
         return
     }
     val walls = tower.room.find(FIND_STRUCTURES)
-        .filter { it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART }
+        .filter {
+            it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART
+        }
     var wall = walls.first()
     var maxWallHp = wall.hits
     var minWallHp = wall.hitsMax
@@ -48,10 +50,13 @@ fun repairWalls(tower: StructureTower) {
 }
 
 fun runTower(tower: StructureTower) {
+    // TODO: 由于修复墙壁需要资源, 但是部分建筑优先级高于墙壁, 所以这里的代码需要优化下
     // Shoot bad guys
-    val badGuy =
-        tower.room.find(FIND_HOSTILE_CREEPS).minByOrNull { abs(it.pos.x - tower.pos.x) + abs(it.pos.y - tower.pos.y) }
-            ?: return repairWalls(tower)
+    val badGuy = tower.room
+        .find(FIND_HOSTILE_CREEPS)
+        .minByOrNull {
+            abs(it.pos.x - tower.pos.x) + abs(it.pos.y - tower.pos.y)
+        } ?: return repairWalls(tower)
 
     when (val code = tower.attack(badGuy)) {
         OK -> console.log("$tower attacking $badGuy")

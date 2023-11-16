@@ -1,4 +1,4 @@
-package screepsai.roles
+package screeps.ai.roles
 
 import screeps.api.Creep
 import screeps.api.ERR_NOT_IN_RANGE
@@ -11,8 +11,8 @@ import screeps.api.Room
 import screeps.api.STRUCTURE_SPAWN
 import screeps.api.get
 import screeps.api.structures.StructureController
+import screeps.sdk.utils.getPathToTarget
 import screeps.utils.memory.memory
-import screepsai.utils.getPathToTarget
 
 var FlagMemory.spawnerId: String? by memory()
 

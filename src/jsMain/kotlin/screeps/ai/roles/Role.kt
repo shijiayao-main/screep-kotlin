@@ -1,4 +1,4 @@
-package screepsai.roles
+package screeps.ai.roles
 
 import screeps.api.Creep
 import screeps.api.CreepMemory
@@ -17,11 +17,17 @@ var CreepMemory.state: Int by memory { CreepState.GET_ENERGY.ordinal }
 var CreepMemory.role: Int by memory { CreepRole.UNASSIGNED.ordinal }
 
 enum class CreepRole {
+    // 未指定的
     UNASSIGNED,
+    // 收集, 用于收集资源
     HARVESTER,
+    // 运输, 用于运输资源
     TRANSPORTER,
+    // 升级, 用于升级
     UPGRADER,
+    // 建造, 用于建造
     BUILDER,
+    // 维护, 用于维护
     MAINTAINER,
     CLAIMER,
     REMOTE_CONSTRUCTION

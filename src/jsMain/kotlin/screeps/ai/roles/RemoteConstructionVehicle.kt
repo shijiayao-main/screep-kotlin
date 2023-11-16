@@ -1,4 +1,4 @@
-package screepsai.roles
+package screeps.ai.roles
 
 import screeps.api.ConstructionSite
 import screeps.api.Creep
@@ -15,8 +15,8 @@ import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
 import screeps.api.get
+import screeps.sdk.utils.getPathToTarget
 import screeps.utils.memory.memory
-import screepsai.utils.getPathToTarget
 import kotlin.math.abs
 
 var FlagMemory.complete: Boolean by memory { false }

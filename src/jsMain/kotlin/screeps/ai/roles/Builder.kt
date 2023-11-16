@@ -1,8 +1,9 @@
-package screepsai.roles
+package screeps.ai.roles
 
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_CONSTRUCTION_SITES
 import screeps.api.FIND_STRUCTURES
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
@@ -10,7 +11,7 @@ import screeps.api.STRUCTURE_RAMPART
 import screeps.api.STRUCTURE_WALL
 import screeps.api.compareTo
 
-class Maintainer(creep: Creep) : Role(creep) {
+class Builder(creep: Creep) : Role(creep) {
     override fun run() {
         when (state) {
             CreepState.GET_ENERGY -> {
@@ -22,7 +23,7 @@ class Maintainer(creep: Creep) : Role(creep) {
             }
 
             CreepState.DO_WORK -> {
-                repairBuildings()
+                buildBuildings()
             }
         }
     }
@@ -43,9 +44,37 @@ class Maintainer(creep: Creep) : Role(creep) {
         }
     }
 
+    private fun buildBuildings() {
+        val constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)
+
+        if (constructionSite == null) {
+            debug("No available construction sites!")
+            // Fall back to repairing buildings if there are none that need to be built
+            repairBuildings()
+            return
+        }
+
+        val status = creep.build(constructionSite)
+
+        if (status == ERR_NOT_IN_RANGE) {
+            creep.moveTo(constructionSite)
+        } else if (status == ERR_NOT_ENOUGH_ENERGY) {
+            info("Out of energy", say = true)
+            state = CreepState.GET_ENERGY
+            return
+        } else if (status != OK) {
+            error("Build failed with code $status", say = true)
+        }
+
+        if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
+            state = CreepState.GET_ENERGY
+        }
+    }
+
     private fun repairBuildings() {
-        var building =
-            creep.room.find(FIND_STRUCTURES).filter { it.structureType in MAINTENANCE_REQUIRED_BUILDING_TYPES }
+        val building =
+            creep.room.find(FIND_STRUCTURES)
+                .filter { it.structureType in MAINTENANCE_REQUIRED_BUILDING_TYPES || it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART }
                 .minByOrNull {
                     val ratio = it.hits.toFloat() / it.hitsMax.toFloat()
 
@@ -57,21 +86,6 @@ class Maintainer(creep: Creep) : Role(creep) {
         if (building == null) {
             error("No available buildings to repair!")
             return
-        }
-
-        if (building.hits.toFloat() / building.hitsMax.toFloat() > 0.90) {
-            val wall = creep.room.find(FIND_STRUCTURES)
-                .filter { it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART }
-                .minByOrNull {
-                    val ratio = it.hits.toFloat() / it.hitsMax.toFloat()
-                    // Chunk float into multiple levels so the creep is less sensitive to repair progress
-                    // this makes the creeps focus on repairing a single target until it moves into the next "bucket"
-                    (ratio * (it.hitsMax / creep.store.getCapacity(RESOURCE_ENERGY)!!)).toInt()
-                }
-            if (wall != null) {
-                info("Buildings well maintained, repairing $wall instead")
-                building = wall
-            }
         }
 
         val status = creep.repair(building)

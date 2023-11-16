@@ -1,5 +1,7 @@
-package screepsai
+package screeps
 
+import screeps.ai.roles.CreepRole
+import screeps.ai.roles.setRole
 import screeps.api.ATTACK
 import screeps.api.BodyPartConstant
 import screeps.api.CARRY
@@ -27,8 +29,6 @@ import screeps.api.structures.StructureSpawn
 import screeps.api.values
 import screeps.utils.isEmpty
 import screeps.utils.unsafe.delete
-import screepsai.roles.CreepRole
-import screepsai.roles.setRole
 
 val BODYPART_COST = hashMapOf(
     MOVE to 50,
@@ -42,7 +42,9 @@ val BODYPART_COST = hashMapOf(
 )
 
 class Body(val parts: Array<BodyPartConstant>) {
-    val cost = parts.sumOf { part -> BODYPART_COST[part]!! }
+    val cost = parts.sumOf { part ->
+        BODYPART_COST[part]!!
+    }
 }
 
 val BASE_BODY = Body(arrayOf(WORK, MOVE, CARRY))

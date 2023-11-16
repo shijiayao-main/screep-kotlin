@@ -1,4 +1,4 @@
-package screepsai.utils
+package screeps.sdk.utils
 
 import screeps.api.CostMatrix
 import screeps.api.FIND_STRUCTURES

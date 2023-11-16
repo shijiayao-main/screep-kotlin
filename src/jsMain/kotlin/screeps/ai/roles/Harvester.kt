@@ -1,4 +1,4 @@
-package screepsai.roles
+package screeps.ai.roles
 
 import screeps.api.Creep
 import screeps.api.CreepMemory
