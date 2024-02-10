@@ -3,26 +3,33 @@ package screeps.ai.roles
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.ERR_NOT_IN_RANGE
+import screeps.api.FIND_CONSTRUCTION_SITES
 import screeps.api.FIND_STRUCTURES
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.STRUCTURE_RAMPART
 import screeps.api.STRUCTURE_WALL
 import screeps.api.compareTo
+import screeps.sdk.ScreepsLog
 
-class Maintainer(creep: Creep) : Role(creep) {
+class BuilderRole(creep: Creep) : AbstractRole(creep) {
+
+    companion object {
+        private const val TAG = "BuilderRole"
+    }
+
     override fun run() {
         when (state) {
             CreepState.GET_ENERGY -> {
                 getEnergy()
                 if (creep.store.getFreeCapacity() == 0) {
-                    info("Energy full", say = true)
+                    say("Energy full")
                     state = CreepState.DO_WORK
                 }
             }
 
             CreepState.DO_WORK -> {
-                repairBuildings()
+                buildBuildings()
             }
         }
     }
@@ -39,13 +46,41 @@ class Maintainer(creep: Creep) : Role(creep) {
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(storage)
         } else if (code != OK) {
-            error("Couldn't withdraw from storage due to error: $code")
+            ScreepsLog.d(TAG, "Couldn't withdraw from storage due to error: $code")
+        }
+    }
+
+    private fun buildBuildings() {
+        val constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)
+
+        if (constructionSite == null) {
+            ScreepsLog.d(TAG, "No available construction sites!")
+            // Fall back to repairing buildings if there are none that need to be built
+            repairBuildings()
+            return
+        }
+
+        val status = creep.build(constructionSite)
+
+        if (status == ERR_NOT_IN_RANGE) {
+            creep.moveTo(constructionSite)
+        } else if (status == ERR_NOT_ENOUGH_ENERGY) {
+            say("Out of energy")
+            state = CreepState.GET_ENERGY
+            return
+        } else if (status != OK) {
+            say("Build failed with code $status")
+        }
+
+        if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
+            state = CreepState.GET_ENERGY
         }
     }
 
     private fun repairBuildings() {
-        var building =
-            creep.room.find(FIND_STRUCTURES).filter { it.structureType in MAINTENANCE_REQUIRED_BUILDING_TYPES }
+        val building =
+            creep.room.find(FIND_STRUCTURES)
+                .filter { it.structureType in MAINTENANCE_REQUIRED_BUILDING_TYPES || it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART }
                 .minByOrNull {
                     val ratio = it.hits.toFloat() / it.hitsMax.toFloat()
 
@@ -55,23 +90,8 @@ class Maintainer(creep: Creep) : Role(creep) {
                 }
 
         if (building == null) {
-            error("No available buildings to repair!")
+            say("No available buildings to repair!")
             return
-        }
-
-        if (building.hits.toFloat() / building.hitsMax.toFloat() > 0.90) {
-            val wall = creep.room.find(FIND_STRUCTURES)
-                .filter { it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART }
-                .minByOrNull {
-                    val ratio = it.hits.toFloat() / it.hitsMax.toFloat()
-                    // Chunk float into multiple levels so the creep is less sensitive to repair progress
-                    // this makes the creeps focus on repairing a single target until it moves into the next "bucket"
-                    (ratio * (it.hitsMax / creep.store.getCapacity(RESOURCE_ENERGY)!!)).toInt()
-                }
-            if (wall != null) {
-                info("Buildings well maintained, repairing $wall instead")
-                building = wall
-            }
         }
 
         val status = creep.repair(building)
@@ -79,11 +99,11 @@ class Maintainer(creep: Creep) : Role(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(building)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            info("Out of energy", say = true)
+            say("Out of energy")
             state = CreepState.GET_ENERGY
             return
         } else if (status != OK) {
-            error("Repair failed with code $status", say = true)
+            say("Repair failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {

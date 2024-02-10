@@ -15,21 +15,27 @@ import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
 import screeps.api.get
+import screeps.sdk.ScreepsLog
 import screeps.sdk.utils.getPathToTarget
 import screeps.utils.memory.memory
 import kotlin.math.abs
 
 var FlagMemory.complete: Boolean by memory { false }
 
-class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
+class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
+
+    companion object {
+        private const val TAG = "RemoteConstructionVehicleRole"
+    }
+
     private val targetFlag: Flag? = Game.flags["NextRoom"]
 
     override fun run() {
         if (targetFlag == null) {
-            warning("No target to work with!")
+            ScreepsLog.d(TAG, "No target to work with!")
         } else {
             if (targetFlag.room?.find(FIND_MY_SPAWNS)?.firstOrNull() != null) {
-                info("Spawn construction completed!")
+                ScreepsLog.d(TAG, "Spawn construction completed!")
                 targetFlag.memory.complete = true
             }
             // Move to target room if not in room
@@ -50,7 +56,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
         val storage = creep.room.storage
 
         if (storage == null || (storage.store.getUsedCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
-            debug("No storage in room, going to gather instead")
+            ScreepsLog.d(TAG, "No storage in room, going to gather instead")
             gatherEnergy()
             return
         }
@@ -59,14 +65,14 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(storage)
         } else if (code != OK) {
-            error("Couldn't withdraw from storage due to error: $code")
+            ScreepsLog.d(TAG, "Couldn't withdraw from storage due to error: $code")
         }
     }
 
     private fun gatherEnergy() {
         val energySource =
             creep.room.find(FIND_SOURCES).sortedBy { abs(it.pos.x - creep.pos.x) + abs(it.pos.y - creep.pos.y) }
-                .firstOrNull { it.energy > 0 } ?: return error("No energy available!")
+                .firstOrNull { it.energy > 0 } ?: return say("No energy available!")
 
         val code = creep.harvest(energySource)
 
@@ -77,7 +83,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
                 creep.moveTo(energySource)
             }
         } else if (code != OK) {
-            error("Gather failed with code $code")
+            ScreepsLog.d(TAG, "Gather failed with code $code")
         }
 
         if ((creep.store.getFreeCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
@@ -89,7 +95,7 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
         val constructionSite = findConstructionSite()
 
         if (constructionSite == null) {
-            warning("No available construction site!")
+            say("No available construction site!")
             depositEnergy()
             return
         }
@@ -103,11 +109,11 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
                 creep.moveTo(constructionSite)
             }
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            info("Out of energy", say = true)
+            say("Out of energy")
             state = CreepState.GET_ENERGY
             return
         } else if (status != OK) {
-            error("Build failed with code $status", say = true)
+            say("Build failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
@@ -125,22 +131,25 @@ class RemoteConstructionVehicle(creep: Creep) : Role(creep) {
     }
 
     private fun depositEnergy() {
-        val spawner = creep.room.find(FIND_MY_SPAWNS).firstOrNull() ?: return error("No spawner to deposit energy into")
+        val spawner = creep.room.find(FIND_MY_SPAWNS).firstOrNull() ?: let {
+            ScreepsLog.d(TAG, "No spawner to deposit energy into")
+            return
+        }
 
         val code = creep.transfer(spawner, RESOURCE_ENERGY)
 
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawner)
         } else if (code == ERR_NOT_ENOUGH_ENERGY) {
-            info("Out of energy", say = true)
+            say("Out of energy")
             state = CreepState.GET_ENERGY
             return
         } else if (code == ERR_FULL) {
-            info("Spawner full of energy, dropping energy for other creeps to use")
+            ScreepsLog.d(TAG, "Spawner full of energy, dropping energy for other creeps to use")
             creep.drop(RESOURCE_ENERGY)
             state = CreepState.GET_ENERGY
         } else if (code != OK) {
-            error("Transfer failed with code $code", say = true)
+            say("Transfer failed with code $code")
         }
 
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) <= 0) {

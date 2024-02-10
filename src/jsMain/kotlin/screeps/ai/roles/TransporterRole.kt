@@ -14,6 +14,7 @@ import screeps.api.STRUCTURE_TOWER
 import screeps.api.StoreOwner
 import screeps.api.compareTo
 import screeps.api.structures.Structure
+import screeps.sdk.ScreepsLog
 import kotlin.math.abs
 
 val FILLABLE_STRUCTURES = setOf(
@@ -23,7 +24,12 @@ val FILLABLE_STRUCTURES = setOf(
     STRUCTURE_STORAGE
 )
 
-class Transporter(creep: Creep) : Role(creep) {
+class TransporterRole(creep: Creep) : AbstractRole(creep) {
+
+    companion object {
+        private const val TAG = "TransporterRole"
+    }
+
     override fun run() {
         when (state) {
             CreepState.GET_ENERGY -> {
@@ -42,24 +48,24 @@ class Transporter(creep: Creep) : Role(creep) {
         if (status == ERR_NOT_FOUND) {
             val storage = creep.room.storage
             if (storage == null || storage.store.getUsedCapacity(RESOURCE_ENERGY) <= 0) {
-                warning("No energy could be found in room", say = true)
+                say("No energy could be found in room")
                 // Try to transport whatever energy we do have while waiting on more to be generated
                 if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 50) {
                     state = CreepState.DO_WORK
                 }
                 return
             }
-            warning("No energy to pick up, gathering from storage")
+            ScreepsLog.d(TAG, "No energy to pick up, gathering from storage")
             val code = creep.withdraw(storage, RESOURCE_ENERGY)
             if (code == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage.pos.x, storage.pos.y)
             } else if (status != OK) {
-                error("Storage withdraw failed with code $status")
+                ScreepsLog.d(TAG, "Storage withdraw failed with code $status")
             }
         }
 
         if (creep.store.getFreeCapacity() == 0) {
-            info("Energy full", say = true)
+            say("Energy full")
             state = CreepState.DO_WORK
         }
     }
@@ -87,7 +93,7 @@ class Transporter(creep: Creep) : Role(creep) {
         val fillableStructures = findFillableStructures()
 
         if (fillableStructures.isEmpty()) {
-            info("No structures to fill with energy")
+            ScreepsLog.d(TAG, "No structures to fill with energy")
             return
         }
 
@@ -99,7 +105,7 @@ class Transporter(creep: Creep) : Role(creep) {
         }
 
         if (fillableStructure == null) {
-            error("No structures to fill with energy!")
+            ScreepsLog.d(TAG, "No structures to fill with energy!")
             return
         }
 
@@ -108,11 +114,11 @@ class Transporter(creep: Creep) : Role(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(fillableStructure)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            info("Out of energy", say = true)
+            say("Out of energy")
             state = CreepState.GET_ENERGY
             return
         } else if (status != OK) {
-            error("Transfer failed with code $status", say = true)
+            say("Transfer failed with code $status")
         }
 
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) <= 0) {

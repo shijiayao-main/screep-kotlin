@@ -8,12 +8,17 @@ import screeps.api.Game
 import screeps.api.OK
 import screeps.api.RoomMemory
 import screeps.api.Source
+import screeps.sdk.ScreepsLog
 import screeps.utils.memory.memory
 
 var CreepMemory.energySource: String? by memory()
 var RoomMemory.energySourceAssignments: Array<String?> by memory { arrayOf(null, null) }
 
-class Harvester(creep: Creep) : Role(creep) {
+class HarvesterRole(creep: Creep) : AbstractRole(creep) {
+    companion object {
+        private const val TAG = "HarvesterRole"
+    }
+
     private var assignedSource: Source? = Game.getObjectById(creep.memory.energySource)
         set(value) {
             creep.memory.energySource = value?.id
@@ -32,30 +37,30 @@ class Harvester(creep: Creep) : Role(creep) {
         val energySources = creep.room.find(FIND_SOURCES).sortedBy { it.id }
 
         if (energySources.isEmpty()) {
-            error("There are no sources in the room!")
+            ScreepsLog.d(TAG, "There are no sources in the room!")
             return null
         }
 
         for (energySource in energySources.withIndex()) {
             val otherCreep = Game.getObjectById<Creep>(creep.room.memory.energySourceAssignments[energySource.index])
             if (otherCreep == null) {
-                info("Dead creep found, re-assigning energy source")
+                ScreepsLog.d(TAG, "Dead creep found, re-assigning energy source")
                 assignedSource = energySource.value
                 creep.room.memory.energySourceAssignments[energySource.index] = creep.id
                 return assignedSource
             } else {
-                debug("Energy source already taken, checking other source(s)")
+                ScreepsLog.d(TAG, "Energy source already taken, checking other source(s)")
             }
         }
 
-        error("All sources in room are taken")
+        say("All sources in room are taken")
         return null
     }
 
     private fun harvestEnergy() {
         val energySource = findEnergySource()
         if (energySource == null) {
-            error("No sources found to gather from!")
+            say("No sources found to gather from!")
             return
         }
 
@@ -64,7 +69,7 @@ class Harvester(creep: Creep) : Role(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(energySource.pos.x, energySource.pos.y)
         } else if (status != OK) {
-            error("Gather failed with code $status")
+            say("Gather failed with code $status")
         }
     }
 }

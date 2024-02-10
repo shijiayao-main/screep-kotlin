@@ -7,14 +7,20 @@ import screeps.api.ERR_NOT_IN_RANGE
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
+import screeps.sdk.ScreepsLog
 
-class Upgrader(creep: Creep) : Role(creep) {
+class UpgraderRole(creep: Creep) : AbstractRole(creep) {
+
+    companion object {
+        private const val TAG = "UpgraderRole"
+    }
+
     override fun run() {
         when (state) {
             CreepState.GET_ENERGY -> {
                 getEnergy()
                 if (creep.store.getFreeCapacity() == 0) {
-                    info("Energy full", say = true)
+                    say("Energy full")
                     state = CreepState.DO_WORK
                 }
             }
@@ -41,7 +47,7 @@ class Upgrader(creep: Creep) : Role(creep) {
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(storage)
         } else if (code != OK) {
-            error("Couldn't withdraw from storage due to error: $code")
+            ScreepsLog.d(TAG, "Couldn't withdraw from storage due to error: $code")
         }
     }
 
@@ -49,7 +55,7 @@ class Upgrader(creep: Creep) : Role(creep) {
         val controller = creep.room.controller
 
         if (controller == null) {
-            error("No controller!")
+            ScreepsLog.d(TAG, "No controller!")
             return
         }
 
@@ -58,11 +64,11 @@ class Upgrader(creep: Creep) : Role(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(controller)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            info("Out of energy", say = true)
+            say("Out of energy")
             state = CreepState.GET_ENERGY
             return
         } else if (status != OK) {
-            error("Upgrade failed with code $status", say = true)
+            say("Upgrade failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {

@@ -11,12 +11,17 @@ import screeps.api.Room
 import screeps.api.STRUCTURE_SPAWN
 import screeps.api.get
 import screeps.api.structures.StructureController
+import screeps.sdk.ScreepsLog
 import screeps.sdk.utils.getPathToTarget
 import screeps.utils.memory.memory
 
 var FlagMemory.spawnerId: String? by memory()
 
-class Claimer(creep: Creep) : Role(creep) {
+class ClaimerRole(creep: Creep) : AbstractRole(creep) {
+
+    companion object {
+        private const val TAG = "ClaimerRole"
+    }
 
     private val targetFlag: Flag? = Game.flags["NextRoom"]
     private val targetController: StructureController? = targetFlag?.room?.controller
@@ -27,7 +32,7 @@ class Claimer(creep: Creep) : Role(creep) {
 
     private fun moveToFlag() {
         if (targetFlag == null) {
-            error("No target room flag located!")
+            ScreepsLog.d(TAG, "No target room flag located!")
             return
         }
 
@@ -37,26 +42,37 @@ class Claimer(creep: Creep) : Role(creep) {
 
     private fun claimRoom() {
         if (targetController == null || targetController.room != creep.room) {
-            warning("Not in room with controller, navigating to $targetFlag instead")
+            ScreepsLog.d(TAG, "Not in room with controller, navigating to $targetFlag instead")
             moveToFlag()
             return
         }
 
         if (targetController.my) {
-            info("$targetController already claimed!")
+            ScreepsLog.d(TAG, "$targetController already claimed!")
             setupRoom(targetController.room)
             return
         }
 
         when (val code = creep.claimController(targetController)) {
-            OK -> info("${targetController.room} claimed!")
-            ERR_NOT_IN_RANGE -> creep.moveTo(targetController)
-            else -> error("Claiming ${targetController.room} failed: $code")
+            OK -> {
+                ScreepsLog.d(TAG, "${targetController.room} claimed!")
+            }
+
+            ERR_NOT_IN_RANGE -> {
+                creep.moveTo(targetController)
+            }
+
+            else -> {
+                ScreepsLog.d(TAG, "Claiming ${targetController.room} failed: $code")
+            }
         }
     }
 
     private fun setupRoom(room: Room) {
-        val spawnPos = targetFlag?.pos ?: return error("Could not find flag to create initial spawn")
+        val spawnPos = targetFlag?.pos ?: let {
+            ScreepsLog.d(TAG, "Could not find flag to create initial spawn")
+            return
+        }
 
         val code = room.createConstructionSite(spawnPos, STRUCTURE_SPAWN)
 
@@ -64,7 +80,7 @@ class Claimer(creep: Creep) : Role(creep) {
         targetFlag.memory.spawnerId = spawner.id
 
         if (code == OK) {
-            info("$room successfully initialized, construction may begin!")
+            ScreepsLog.d(TAG, "$room successfully initialized, construction may begin!")
         }
     }
 }

@@ -10,33 +10,13 @@ import screeps.api.RESOURCE_ENERGY
 import screeps.api.STRUCTURE_CONTAINER
 import screeps.api.STRUCTURE_ROAD
 import screeps.api.ScreepsReturnCode
+import screeps.sdk.ScreepsLog
 import screeps.utils.memory.memory
 import kotlin.math.abs
 
 var CreepMemory.state: Int by memory { CreepState.GET_ENERGY.ordinal }
-var CreepMemory.role: Int by memory { CreepRole.UNASSIGNED.ordinal }
+var CreepMemory.role: Int by memory { CreepRole.Unassigned.ordinal }
 
-enum class CreepRole {
-    // 未指定的
-    UNASSIGNED,
-    // 收集, 用于收集资源
-    HARVESTER,
-    // 运输, 用于运输资源
-    TRANSPORTER,
-    // 升级, 用于升级
-    UPGRADER,
-    // 建造, 用于建造
-    BUILDER,
-    // 维护, 用于维护
-    MAINTAINER,
-    CLAIMER,
-    REMOTE_CONSTRUCTION
-}
-
-enum class CreepState {
-    GET_ENERGY,
-    DO_WORK;
-}
 
 val MAINTENANCE_REQUIRED_BUILDING_TYPES = setOf(
     STRUCTURE_ROAD,
@@ -48,21 +28,25 @@ fun getState(state: Int): CreepState {
     return CreepState.values().firstOrNull { it.ordinal == state } ?: CreepState.GET_ENERGY
 }
 
-abstract class Role(val creep: Creep) {
+abstract class AbstractRole(val creep: Creep) {
     companion object {
+
+        private const val TAG = "AbstractRole"
+
         /*
             Instantiate concrete subclass based on given role and creep
          */
-        fun build(creepRole: CreepRole, creep: Creep): Role {
+        fun build(creepRole: CreepRole, creep: Creep): AbstractRole {
             return when (creepRole) {
-                CreepRole.UNASSIGNED -> throw IllegalArgumentException("Cannot process a creep without a role")
-                CreepRole.HARVESTER -> Harvester(creep)
-                CreepRole.UPGRADER -> Upgrader(creep)
-                CreepRole.TRANSPORTER -> Transporter(creep)
-                CreepRole.BUILDER -> Builder(creep)
-                CreepRole.MAINTAINER -> Maintainer(creep)
-                CreepRole.CLAIMER -> Claimer(creep)
-                CreepRole.REMOTE_CONSTRUCTION -> RemoteConstructionVehicle(creep)
+                CreepRole.Unassigned -> throw IllegalArgumentException("Cannot process a creep without a role")
+                CreepRole.Harvester -> HarvesterRole(creep)
+                CreepRole.Updater -> UpgraderRole(creep)
+                CreepRole.Transporter -> TransporterRole(creep)
+                CreepRole.Builder -> BuilderRole(creep)
+                CreepRole.Maintainer -> MaintainerRole(creep)
+                CreepRole.Claimer -> ClaimerRole(creep)
+                CreepRole.RemoteConstruction -> RemoteConstructionVehicleRole(creep)
+                CreepRole.Defender -> DefenderRole(creep)
             }
         }
     }
@@ -73,36 +57,21 @@ abstract class Role(val creep: Creep) {
             creep.memory.state = value.ordinal
         }
 
-    private fun log(level: String, message: String, say: Boolean = false) {
-        if (say) {
+    protected fun say(message: String) {
+        if (message.isNotBlank()) {
             creep.say(message)
         }
-        console.log("$level ${creep.name}: $message")
-    }
-
-    fun debug(message: String, say: Boolean = false) {
-        log("DEBUG", message, say = say)
-    }
-
-    fun info(message: String, say: Boolean = false) {
-        log("INFO", message, say = say)
-    }
-
-    fun warning(message: String, say: Boolean = false) {
-        log("WARNING", message, say = say)
-    }
-
-    fun error(message: String, say: Boolean = false) {
-        log("ERROR", message, say = say)
     }
 
     protected fun pickupEnergy(): ScreepsReturnCode {
         // TODO: Handle priority
         val energySource = creep.room.find(FIND_DROPPED_RESOURCES).filter { it.resourceType == RESOURCE_ENERGY }
-            .minByOrNull { (abs(creep.pos.x - it.pos.x) + abs(creep.pos.y - it.pos.y)).toFloat() / it.amount.toFloat() }
+            .minByOrNull {
+                (abs(creep.pos.x - it.pos.x) + abs(creep.pos.y - it.pos.y)).toFloat() / it.amount.toFloat()
+            }
 
         if (energySource == null || energySource.amount < 10) {
-            warning("No energy available!", say = true)
+            say("No energy available!")
             return ERR_NOT_FOUND
         }
 
@@ -111,7 +80,7 @@ abstract class Role(val creep: Creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(energySource.pos.x, energySource.pos.y)
         } else if (status != OK) {
-            error("Gather failed with code $status")
+            ScreepsLog.d(TAG, "Gather failed with code $status")
         }
         return status
     }
@@ -127,5 +96,5 @@ fun Creep.setRole(newRole: CreepRole) {
 
 fun Creep.getRole(): CreepRole {
     // TODO: Set up a map so this is faster/better
-    return CreepRole.values().firstOrNull { it.ordinal == memory.role } ?: CreepRole.UNASSIGNED
+    return CreepRole.values().firstOrNull { it.ordinal == memory.role } ?: CreepRole.Unassigned
 }
