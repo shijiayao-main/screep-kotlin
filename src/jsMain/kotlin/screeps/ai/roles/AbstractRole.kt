@@ -39,7 +39,7 @@ abstract class AbstractRole(val creep: Creep) {
             return when (creepRole) {
                 CreepRole.Unassigned -> throw IllegalArgumentException("Cannot process a creep without a role")
                 CreepRole.Harvester -> HarvesterRole(creep)
-                CreepRole.Updater -> UpgraderRole(creep)
+                CreepRole.Updater -> UpdaterRole(creep)
                 CreepRole.Transporter -> TransporterRole(creep)
                 CreepRole.Builder -> BuilderRole(creep)
                 CreepRole.Maintainer -> MaintainerRole(creep)

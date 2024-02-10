@@ -9,7 +9,7 @@ import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
 import screeps.sdk.ScreepsLog
 
-class UpgraderRole(creep: Creep) : AbstractRole(creep) {
+class UpdaterRole(creep: Creep) : AbstractRole(creep) {
 
     companion object {
         private const val TAG = "UpgraderRole"
