@@ -10,9 +10,6 @@ import screeps.api.FIND_MY_STRUCTURES
 import screeps.api.FIND_SOURCES
 import screeps.api.FIND_STRUCTURES
 import screeps.api.Room
-import screeps.api.STRUCTURE_RAMPART
-import screeps.api.STRUCTURE_ROAD
-import screeps.api.STRUCTURE_WALL
 import screeps.api.Source
 import screeps.api.structures.Structure
 import screeps.api.structures.StructureSpawn
@@ -22,11 +19,11 @@ fun Room.findMyConstruction(): List<ConstructionSite> {
     return find(FIND_MY_CONSTRUCTION_SITES).toList()
 }
 
-fun Room.findSpawn():List<StructureSpawn> {
+fun Room.findSpawn(): List<StructureSpawn> {
     return find(FIND_MY_SPAWNS).toList()
 }
 
-fun Room.findSource():List<Source> {
+fun Room.findSource(): List<Source> {
     return find(FIND_SOURCES).toList()
 }
 

@@ -19,7 +19,7 @@ import screeps.sdk.extensions.findSource
 import screeps.sdk.extensions.findSpawn
 import screeps.sdk.extensions.findTower
 
-fun getGameData(): List<RoomInfo>{
+fun getGameData(): List<RoomInfo> {
     val roomInfoList: MutableList<RoomInfo> = ArrayList()
     Game.rooms.values.forEach { room: Room ->
         val roomStructureInfo = getStructureData(room = room)

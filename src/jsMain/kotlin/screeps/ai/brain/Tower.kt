@@ -8,7 +8,6 @@ import screeps.api.RESOURCE_ENERGY
 import screeps.api.structures.Structure
 import screeps.api.structures.StructureTower
 import screeps.sdk.ScreepsLog
-import screeps.sdk.extensions.findNeedRepairPublicBuild
 import screeps.sdk.extensions.isPublicBuild
 import kotlin.math.abs
 

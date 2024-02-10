@@ -17,7 +17,6 @@ import kotlin.math.abs
 var CreepMemory.state: Int by memory { CreepState.GET_ENERGY.ordinal }
 var CreepMemory.role: Int by memory { CreepRole.Unassigned.ordinal }
 
-
 val MAINTENANCE_REQUIRED_BUILDING_TYPES = setOf(
     STRUCTURE_ROAD,
     STRUCTURE_CONTAINER,

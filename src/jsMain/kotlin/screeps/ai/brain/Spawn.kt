@@ -8,38 +8,37 @@ import screeps.ai.nest.MaintainerCreepNest
 import screeps.ai.nest.TransporterCreepNest
 import screeps.ai.nest.UpdaterCreepNest
 
-
-//val BASE_BODY = Body(arrayOf(WORK, MOVE, CARRY))
+// val BASE_BODY = Body(arrayOf(WORK, MOVE, CARRY))
 //
-//val HARVESTER_BODIES = arrayOf(
+// val HARVESTER_BODIES = arrayOf(
 //    Body(arrayOf(WORK, WORK, MOVE)),
 //    Body(arrayOf(WORK, WORK, WORK, WORK, WORK, MOVE)),
-//)
+// )
 //
-//val UPGRADE_BODIES = arrayOf(
+// val UPGRADE_BODIES = arrayOf(
 //    Body(arrayOf(WORK, MOVE, MOVE, CARRY, CARRY)),
 //    Body(arrayOf(MOVE, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY))
-//)
+// )
 //
-//val DEFENDER_BODIES = arrayOf(
+// val DEFENDER_BODIES = arrayOf(
 //    Body(arrayOf(ATTACK, ATTACK, MOVE, MOVE))
-//)
+// )
 //
-//val TRANSPORTER_BODIES = arrayOf(
+// val TRANSPORTER_BODIES = arrayOf(
 //    Body(arrayOf(MOVE, MOVE, CARRY, CARRY, CARRY, CARRY)),
 //    Body(arrayOf(MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY))
-//)
+// )
 //
-//val BUILDER_BODIES = arrayOf(
+// val BUILDER_BODIES = arrayOf(
 //    Body(arrayOf(WORK, CARRY, CARRY, CARRY, MOVE)),
 //    Body(arrayOf(MOVE, MOVE, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY))
-//)
+// )
 //
-//val CLAIMER_BODIES = arrayOf(
+// val CLAIMER_BODIES = arrayOf(
 //    Body(arrayOf(MOVE, CLAIM)),
-//)
+// )
 //
-//val REMOTE_CONSTRUCTION_BODIES = arrayOf(
+// val REMOTE_CONSTRUCTION_BODIES = arrayOf(
 //    Body(
 //        arrayOf(
 //            MOVE, MOVE, MOVE, MOVE, MOVE,
@@ -54,9 +53,9 @@ import screeps.ai.nest.UpdaterCreepNest
 //            CARRY, CARRY, CARRY, CARRY, CARRY
 //        )
 //    ),
-//)
+// )
 
-//fun getBody(role: CreepRole, energyAvailable: Int): Body {
+// fun getBody(role: CreepRole, energyAvailable: Int): Body {
 //    val bodies = when (role) {
 //        CreepRole.Unassigned -> return BASE_BODY
 //        CreepRole.Harvester -> HARVESTER_BODIES
@@ -70,9 +69,9 @@ import screeps.ai.nest.UpdaterCreepNest
 //    }
 //
 //    return bodies.last { it.cost <= energyAvailable }
-//}
+// }
 
-//fun spawnCreep(spawn: StructureSpawn, role: CreepRole, body: Body): Creep? {
+// fun spawnCreep(spawn: StructureSpawn, role: CreepRole, body: Body): Creep? {
 //    val newName = "creep_${role.name}_${Game.time}"
 //    val code = spawn.spawnCreep(body.parts, newName)
 //    when (code) {
@@ -90,12 +89,12 @@ import screeps.ai.nest.UpdaterCreepNest
 //    creep.setRole(role)
 //
 //    return creep
-//}
+// }
 //
-//fun spawnNewCreep(
+// fun spawnNewCreep(
 //    role: CreepRole,
 //    room: Room
-//): Creep? {
+// ): Creep? {
 //
 //    val body = try {
 //        getBody(role, room.energyAvailable)
@@ -114,9 +113,9 @@ import screeps.ai.nest.UpdaterCreepNest
 //    }
 //    console.log("Unable to spawn new $role creep in $room")
 //    return null
-//}
+// }
 //
-//fun spawnCrossRoomCreep(role: CreepRole, targetFlag: Flag): Creep? {
+// fun spawnCrossRoomCreep(role: CreepRole, targetFlag: Flag): Creep? {
 //    val body = when (role) {
 //        CreepRole.Claimer -> CLAIMER_BODIES[0]
 //        CreepRole.RemoteConstruction -> REMOTE_CONSTRUCTION_BODIES[0]
@@ -133,7 +132,7 @@ import screeps.ai.nest.UpdaterCreepNest
 //    }
 //
 //    return spawnCreep(spawner, role, body)
-//}
+// }
 
 fun runSpawn(roomInfo: RoomInfo) {
     val harvesterCreepNest = HarvesterCreepNest(creepNest = null, roomInfo = roomInfo)

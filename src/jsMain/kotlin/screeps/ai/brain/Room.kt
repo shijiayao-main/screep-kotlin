@@ -4,10 +4,6 @@ import screeps.ai.entity.RoomCreepInfo
 import screeps.ai.entity.RoomInfo
 import screeps.ai.roles.AbstractRole
 import screeps.ai.roles.CreepRole
-import screeps.ai.roles.setRole
-import screeps.api.Room
-import screeps.api.WORK
-import screeps.sdk.ScreepsLog
 
 private const val TAG = "Room"
 
@@ -67,10 +63,10 @@ private fun runCreep(creepInfo: RoomCreepInfo) {
     }
 }
 
-//private fun runRoom(
+// private fun runRoom(
 //    room: Room,
 //    creepsByRoleAndRoom: Map<CreepRole, Map<Room, List<Creep>>>
-//) {
+// ) {
 //    startTower(room = room)
 //
 //    var minCreepsInUnfilledRole = 1000
@@ -141,9 +137,9 @@ private fun runCreep(creepInfo: RoomCreepInfo) {
 //            }
 //        }
 //    }
-//}
+// }
 
-//private fun claimNewRooms(creepsByRoomAndRole: Map<CreepRole, Map<Room, List<Creep>>>) {
+// private fun claimNewRooms(creepsByRoomAndRole: Map<CreepRole, Map<Room, List<Creep>>>) {
 //    val nextRoomFlag = Game.flags["NextRoom"] ?: return ScreepsLog.d(TAG, "No NextRoom flag, skipping claim room routine")
 //
 //    if (nextRoomFlag.memory.complete) {
@@ -170,4 +166,4 @@ private fun runCreep(creepInfo: RoomCreepInfo) {
 //            ) ?: return ScreepsLog.d(TAG, "No RCV could be located or created")
 //        }
 //    }
-//}
+// }
