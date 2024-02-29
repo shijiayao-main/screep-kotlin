@@ -26,7 +26,6 @@ class MaintainerRole(
     }
 
     override fun startWork() {
-
     }
 
     fun run(creep: Creep) {

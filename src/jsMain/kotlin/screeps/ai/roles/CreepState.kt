@@ -6,7 +6,7 @@ enum class CreepState(val creepState: Int) {
 }
 
 fun Int.toCreepState(): CreepState {
-    return when(this) {
+    return when (this) {
         CreepState.DoWork.creepState -> CreepState.DoWork
         CreepState.GetEnergy.creepState -> CreepState.GetEnergy
         else -> CreepState.DoWork

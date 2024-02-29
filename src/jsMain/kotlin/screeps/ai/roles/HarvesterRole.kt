@@ -38,7 +38,6 @@ class HarvesterRole(
     }
 
     override fun startWork() {
-
     }
 
     fun run(creep: Creep) {
@@ -85,5 +84,4 @@ class HarvesterRole(
         creep.say("All sources in room are taken")
         return null
     }
-
 }

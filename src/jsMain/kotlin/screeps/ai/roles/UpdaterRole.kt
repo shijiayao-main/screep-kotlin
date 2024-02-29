@@ -25,7 +25,6 @@ class UpdaterRole(
     }
 
     override fun startWork() {
-
     }
 
     fun run(creep: Creep) {

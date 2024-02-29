@@ -17,4 +17,3 @@ fun Creep.getState(): CreepState {
 fun Creep.setState(state: CreepState) {
     memory.state = state.creepState
 }
-

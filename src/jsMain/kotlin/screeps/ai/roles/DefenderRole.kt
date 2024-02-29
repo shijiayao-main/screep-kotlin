@@ -13,7 +13,6 @@ class DefenderRole(
     roomInfo = roomInfo,
 ) {
     override fun startWork() {
-
     }
 
     private fun run(creep: Creep) {

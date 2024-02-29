@@ -40,7 +40,6 @@ class TransporterRole(
     }
 
     override fun startWork() {
-
     }
 
     fun run(creep: Creep) {

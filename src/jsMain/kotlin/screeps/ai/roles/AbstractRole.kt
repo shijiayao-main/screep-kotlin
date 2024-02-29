@@ -13,7 +13,6 @@ import screeps.sdk.ScreepsLog
 import screeps.sdk.extensions.findDroppedResources
 import kotlin.math.abs
 
-
 val MAINTENANCE_REQUIRED_BUILDING_TYPES = setOf(
     STRUCTURE_ROAD,
     STRUCTURE_CONTAINER,

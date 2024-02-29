@@ -40,7 +40,6 @@ class RemoteConstructionVehicleRole(
     private val targetFlag: Flag? = Game.flags["NextRoom"]
 
     override fun startWork() {
-
     }
 
     fun run(creep: Creep) {

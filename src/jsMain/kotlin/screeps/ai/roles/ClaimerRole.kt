@@ -2,7 +2,6 @@ package screeps.ai.roles
 
 import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
-import screeps.api.ERR_NOT_IN_RANGE
 import screeps.api.FIND_CONSTRUCTION_SITES
 import screeps.api.Flag
 import screeps.api.FlagMemory
@@ -13,7 +12,6 @@ import screeps.api.STRUCTURE_SPAWN
 import screeps.api.get
 import screeps.api.structures.StructureController
 import screeps.sdk.ScreepsLog
-import screeps.sdk.utils.getPathToTarget
 import screeps.utils.memory.memory
 
 var FlagMemory.spawnerId: String? by memory()
@@ -24,7 +22,7 @@ class ClaimerRole(
 ) : AbstractRole(
     creepList = creepList,
     roomInfo = roomInfo
-)  {
+) {
 
     companion object {
         private const val TAG = "ClaimerRole"
