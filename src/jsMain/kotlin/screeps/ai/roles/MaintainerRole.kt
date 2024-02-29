@@ -1,5 +1,6 @@
 package screeps.ai.roles
 
+import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.ERR_NOT_IN_RANGE
@@ -10,33 +11,45 @@ import screeps.api.STRUCTURE_RAMPART
 import screeps.api.STRUCTURE_WALL
 import screeps.api.compareTo
 import screeps.sdk.ScreepsLog
+import screeps.sdk.extensions.getState
+import screeps.sdk.extensions.setState
 
-class MaintainerRole(creep: Creep) : AbstractRole(creep) {
+class MaintainerRole(
+    creepList: List<Creep>,
+    roomInfo: RoomInfo,
+) : AbstractRole(
+    creepList = creepList,
+    roomInfo = roomInfo
+) {
     companion object {
         private const val TAG = "MaintainerRole"
     }
 
-    override fun run() {
-        when (state) {
-            CreepState.GET_ENERGY -> {
-                getEnergy()
+    override fun startWork() {
+
+    }
+
+    fun run(creep: Creep) {
+        when (val state = creep.getState()) {
+            CreepState.GetEnergy -> {
+                getEnergy(creep)
                 if (creep.store.getFreeCapacity() == 0) {
-                    say("Energy full")
-                    state = CreepState.DO_WORK
+                    creep.say("Energy full")
+                    creep.setState(CreepState.DoWork)
                 }
             }
 
-            CreepState.DO_WORK -> {
-                repairBuildings()
+            CreepState.DoWork -> {
+                repairBuildings(creep = creep)
             }
         }
     }
 
-    private fun getEnergy() {
+    private fun getEnergy(creep: Creep) {
         val storage = creep.room.storage
 
         if (storage == null || (storage.store.getUsedCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
-            pickupEnergy()
+            pickupEnergy(creep = creep)
             return
         }
 
@@ -48,7 +61,7 @@ class MaintainerRole(creep: Creep) : AbstractRole(creep) {
         }
     }
 
-    private fun repairBuildings() {
+    private fun repairBuildings(creep: Creep) {
         var building =
             creep.room.find(FIND_STRUCTURES).filter { it.structureType in MAINTENANCE_REQUIRED_BUILDING_TYPES }
                 .minByOrNull {
@@ -84,15 +97,15 @@ class MaintainerRole(creep: Creep) : AbstractRole(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(building)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            say("Out of energy")
-            state = CreepState.GET_ENERGY
+            creep.say("Out of energy")
+            creep.setState(CreepState.GetEnergy)
             return
         } else if (status != OK) {
-            say("Repair failed with code $status")
+            creep.say("Repair failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         }
     }
 }

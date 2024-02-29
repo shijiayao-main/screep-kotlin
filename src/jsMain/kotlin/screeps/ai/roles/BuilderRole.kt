@@ -1,44 +1,58 @@
 package screeps.ai.roles
 
+import screeps.ai.entity.RoomInfo
+import screeps.api.ConstructionSite
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.ERR_NOT_IN_RANGE
-import screeps.api.FIND_CONSTRUCTION_SITES
-import screeps.api.FIND_STRUCTURES
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
-import screeps.api.STRUCTURE_RAMPART
-import screeps.api.STRUCTURE_WALL
 import screeps.api.compareTo
 import screeps.sdk.ScreepsLog
+import screeps.sdk.extensions.getState
+import screeps.sdk.extensions.setState
 
-class BuilderRole(creep: Creep) : AbstractRole(creep) {
+class BuilderRole(
+    creepList: List<Creep>,
+    roomInfo: RoomInfo
+) : AbstractRole(
+    creepList = creepList,
+    roomInfo = roomInfo
+) {
 
     companion object {
         private const val TAG = "BuilderRole"
     }
 
-    override fun run() {
+    override fun startWork() {
+        creepList.forEach {
+            run(creep = it)
+        }
+    }
+
+    private fun run(creep: Creep) {
+        val state = creep.getState()
         when (state) {
-            CreepState.GET_ENERGY -> {
-                getEnergy()
+            CreepState.GetEnergy -> {
+                getEnergy(creep = creep)
                 if (creep.store.getFreeCapacity() == 0) {
-                    say("Energy full")
-                    state = CreepState.DO_WORK
+                    creep.say("Energy full")
+                    creep.setState(CreepState.DoWork)
                 }
             }
 
-            CreepState.DO_WORK -> {
-                buildBuildings()
+            CreepState.DoWork -> {
+                buildBuildings(creep = creep)
             }
         }
     }
 
-    private fun getEnergy() {
+    private fun getEnergy(creep: Creep) {
+        creep.say("🔄 Harvesting")
         val storage = creep.room.storage
 
         if (storage == null || (storage.store.getUsedCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
-            pickupEnergy()
+            pickupEnergy(creep = creep)
             return
         }
 
@@ -50,13 +64,14 @@ class BuilderRole(creep: Creep) : AbstractRole(creep) {
         }
     }
 
-    private fun buildBuildings() {
-        val constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)
+    private fun buildBuildings(creep: Creep) {
+        creep.say("🚧 Building")
+
+        val constructionSite: ConstructionSite? = roomInfo.roomStructureInfo.myConstructionMap.values.firstOrNull()
 
         if (constructionSite == null) {
-            ScreepsLog.d(TAG, "No available construction sites!")
             // Fall back to repairing buildings if there are none that need to be built
-            repairBuildings()
+            repairBuildings(creep = creep)
             return
         }
 
@@ -65,32 +80,23 @@ class BuilderRole(creep: Creep) : AbstractRole(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(constructionSite)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            say("Out of energy")
-            state = CreepState.GET_ENERGY
+            creep.say("Out of energy")
+            creep.setState(CreepState.GetEnergy)
             return
         } else if (status != OK) {
-            say("Build failed with code $status")
+            ScreepsLog.d(TAG, "Build failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         }
     }
 
-    private fun repairBuildings() {
-        val building =
-            creep.room.find(FIND_STRUCTURES)
-                .filter { it.structureType in MAINTENANCE_REQUIRED_BUILDING_TYPES || it.structureType == STRUCTURE_WALL || it.structureType == STRUCTURE_RAMPART }
-                .minByOrNull {
-                    val ratio = it.hits.toFloat() / it.hitsMax.toFloat()
-
-                    // Chunk float into multiple levels so the creep is less sensitive to repair progress
-                    // this makes the creeps focus on repairing a single target until it moves into the next "bucket"
-                    (ratio * 1000).toInt()
-                }
+    private fun repairBuildings(creep: Creep) {
+        val building = roomInfo.roomStructureInfo.selfNeedRepairBuildList.firstOrNull()
 
         if (building == null) {
-            say("No available buildings to repair!")
+            ScreepsLog.d(TAG, "No available buildings to repair!")
             return
         }
 
@@ -99,15 +105,15 @@ class BuilderRole(creep: Creep) : AbstractRole(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(building)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            say("Out of energy")
-            state = CreepState.GET_ENERGY
+            creep.say("Out of energy")
+            creep.setState(CreepState.GetEnergy)
             return
         } else if (status != OK) {
-            say("Repair failed with code $status")
+            ScreepsLog.d(TAG, "Repair failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         }
     }
 }

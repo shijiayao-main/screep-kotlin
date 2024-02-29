@@ -1,5 +1,6 @@
 package screeps.ai.roles
 
+import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.ERR_NOT_FOUND
@@ -15,6 +16,8 @@ import screeps.api.StoreOwner
 import screeps.api.compareTo
 import screeps.api.structures.Structure
 import screeps.sdk.ScreepsLog
+import screeps.sdk.extensions.getState
+import screeps.sdk.extensions.setState
 import kotlin.math.abs
 
 val FILLABLE_STRUCTURES = setOf(
@@ -24,34 +27,45 @@ val FILLABLE_STRUCTURES = setOf(
     STRUCTURE_STORAGE
 )
 
-class TransporterRole(creep: Creep) : AbstractRole(creep) {
+class TransporterRole(
+    creepList: List<Creep>,
+    roomInfo: RoomInfo,
+) : AbstractRole(
+    creepList = creepList,
+    roomInfo = roomInfo
+) {
 
     companion object {
         private const val TAG = "TransporterRole"
     }
 
-    override fun run() {
+    override fun startWork() {
+
+    }
+
+    fun run(creep: Creep) {
+        val state = creep.getState()
         when (state) {
-            CreepState.GET_ENERGY -> {
-                getEnergy()
+            CreepState.GetEnergy -> {
+                getEnergy(creep = creep)
             }
 
-            CreepState.DO_WORK -> {
-                storeEnergy()
+            CreepState.DoWork -> {
+                storeEnergy(creep = creep)
             }
         }
     }
 
-    private fun getEnergy() {
-        val status = pickupEnergy()
+    private fun getEnergy(creep: Creep) {
+        val status = pickupEnergy(creep = creep)
 
         if (status == ERR_NOT_FOUND) {
             val storage = creep.room.storage
             if (storage == null || storage.store.getUsedCapacity(RESOURCE_ENERGY) <= 0) {
-                say("No energy could be found in room")
+                creep.say("No energy could be found in room")
                 // Try to transport whatever energy we do have while waiting on more to be generated
                 if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 50) {
-                    state = CreepState.DO_WORK
+                    creep.setState(CreepState.DoWork)
                 }
                 return
             }
@@ -65,15 +79,19 @@ class TransporterRole(creep: Creep) : AbstractRole(creep) {
         }
 
         if (creep.store.getFreeCapacity() == 0) {
-            say("Energy full")
-            state = CreepState.DO_WORK
+            creep.say("Energy full")
+            creep.setState(CreepState.DoWork)
         }
     }
 
-    private fun findFillableStructures(): List<StoreOwner> {
+    private fun findFillableStructures(
+        creep: Creep
+    ): List<StoreOwner> {
         val fillableStructures = creep.room.find(FIND_MY_STRUCTURES).filter {
             it.structureType in FILLABLE_STRUCTURES
-        }.map { it as StoreOwner }.filter {
+        }.map {
+            it as StoreOwner
+        }.filter {
             (it.store.getFreeCapacity(RESOURCE_ENERGY) ?: 0) > 0
         }.groupBy {
             when (it.unsafeCast<Structure>().structureType) {
@@ -89,8 +107,8 @@ class TransporterRole(creep: Creep) : AbstractRole(creep) {
         return fillableStructures.getOrElse(fillableStructures.keys.minOrNull() ?: 2) { emptyList() }
     }
 
-    private fun storeEnergy() {
-        val fillableStructures = findFillableStructures()
+    private fun storeEnergy(creep: Creep) {
+        val fillableStructures = findFillableStructures(creep = creep)
 
         if (fillableStructures.isEmpty()) {
             ScreepsLog.d(TAG, "No structures to fill with energy")
@@ -114,15 +132,15 @@ class TransporterRole(creep: Creep) : AbstractRole(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(fillableStructure)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            say("Out of energy")
-            state = CreepState.GET_ENERGY
+            creep.say("Out of energy")
+            creep.setState(CreepState.GetEnergy)
             return
         } else if (status != OK) {
-            say("Transfer failed with code $status")
+            creep.say("Transfer failed with code $status")
         }
 
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) <= 0) {
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         }
     }
 }

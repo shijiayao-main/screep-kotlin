@@ -9,10 +9,10 @@ import screeps.api.structures.StructureTower
 
 class RoomStructureInfo(
     val controller: StructureController?,
-    val spawnList: List<StructureSpawn>,
-    val sourceList: List<Source>,
-    val myConstructionList: List<ConstructionSite>,
+    val spawnMap: Map<String, StructureSpawn>,
+    val sourceMap: Map<String, Source>,
+    val myConstructionMap: Map<String, ConstructionSite>,
     val selfNeedRepairBuildList: List<Structure>,
     val publicNeedRepairBuildList: List<Structure>,
-    val towerList: List<StructureTower>,
+    val towerMap: Map<String, StructureTower>,
 )

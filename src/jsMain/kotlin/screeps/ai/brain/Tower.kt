@@ -14,12 +14,13 @@ import kotlin.math.abs
 private const val TAG = "Tower"
 
 fun startTower(roomInfo: RoomInfo) {
-    val towerList = roomInfo.roomStructureInfo.towerList
+    val towerList = roomInfo.roomStructureInfo.towerMap
     val enemyList = roomInfo.roomCreepInfo.enemyList
     val selfNeedRepairBuildList = roomInfo.roomStructureInfo.selfNeedRepairBuildList
     val publicNeedRepairBuildList = roomInfo.roomStructureInfo.publicNeedRepairBuildList
 
-    towerList.forEach { tower ->
+    towerList.forEach { data ->
+        val tower = data.value
         runTower(
             tower = tower,
             enemyList = enemyList,

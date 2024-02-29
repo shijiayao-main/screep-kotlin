@@ -2,8 +2,12 @@ package screeps.ai.brain
 
 import screeps.ai.entity.RoomCreepInfo
 import screeps.ai.entity.RoomInfo
-import screeps.ai.roles.AbstractRole
-import screeps.ai.roles.CreepRole
+import screeps.ai.roles.BuilderRole
+import screeps.ai.roles.DefenderRole
+import screeps.ai.roles.HarvesterRole
+import screeps.ai.roles.MaintainerRole
+import screeps.ai.roles.TransporterRole
+import screeps.ai.roles.UpdaterRole
 
 private const val TAG = "Room"
 
@@ -39,27 +43,19 @@ fun startRoom(roomInfo: RoomInfo) {
 //        prioritySpawnActive = true
 //    }
 
-    runCreep(creepInfo = roomInfo.roomCreepInfo)
+    runCreep(roomInfo = roomInfo, creepInfo = roomInfo.roomCreepInfo)
 }
 
-private fun runCreep(creepInfo: RoomCreepInfo) {
-    creepInfo.harvesterList.forEach {
-        AbstractRole.build(creepRole = CreepRole.Harvester, creep = it).run()
-    }
-    creepInfo.updaterList.forEach {
-        AbstractRole.build(creepRole = CreepRole.Updater, creep = it).run()
-    }
-    creepInfo.builderList.forEach {
-        AbstractRole.build(creepRole = CreepRole.Builder, creep = it).run()
-    }
-    creepInfo.transporterList.forEach {
-        AbstractRole.build(creepRole = CreepRole.Transporter, creep = it).run()
-    }
-    creepInfo.maintainerList.forEach {
-        AbstractRole.build(creepRole = CreepRole.Maintainer, creep = it).run()
-    }
-    creepInfo.defenderList.forEach {
-        AbstractRole.build(creepRole = CreepRole.Defender, creep = it).run()
+private fun runCreep(roomInfo: RoomInfo, creepInfo: RoomCreepInfo) {
+    listOf(
+        HarvesterRole(creepList = creepInfo.harvesterList, roomInfo = roomInfo),
+        UpdaterRole(creepList = creepInfo.harvesterList, roomInfo = roomInfo),
+        BuilderRole(creepList = creepInfo.harvesterList, roomInfo = roomInfo),
+        TransporterRole(creepList = creepInfo.harvesterList, roomInfo = roomInfo),
+        MaintainerRole(creepList = creepInfo.harvesterList, roomInfo = roomInfo),
+        DefenderRole(creepList = creepInfo.harvesterList, roomInfo = roomInfo),
+    ).forEach {
+        it.startWork()
     }
 }
 

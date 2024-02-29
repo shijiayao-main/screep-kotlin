@@ -26,9 +26,9 @@ abstract class AbstractCreepNest(
         if (count <= 0) {
             return false
         }
-        val spawnList = roomInfo.roomStructureInfo.spawnList
-        for (index in spawnList.indices) {
-            val spawn = spawnList.getOrNull(index) ?: continue
+        val spawnMap = roomInfo.roomStructureInfo.spawnMap
+        spawnMap.forEach {
+            val spawn = it.value
             val result = spawnCreep(
                 spawn = spawn,
                 role = role,

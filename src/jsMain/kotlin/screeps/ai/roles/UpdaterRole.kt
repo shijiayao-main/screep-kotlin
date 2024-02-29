@@ -1,5 +1,6 @@
 package screeps.ai.roles
 
+import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.ERR_NOT_FOUND
@@ -8,37 +9,49 @@ import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
 import screeps.sdk.ScreepsLog
+import screeps.sdk.extensions.getState
+import screeps.sdk.extensions.setState
 
-class UpdaterRole(creep: Creep) : AbstractRole(creep) {
+class UpdaterRole(
+    creepList: List<Creep>,
+    roomInfo: RoomInfo,
+) : AbstractRole(
+    creepList = creepList,
+    roomInfo = roomInfo
+) {
 
     companion object {
         private const val TAG = "UpgraderRole"
     }
 
-    override fun run() {
-        when (state) {
-            CreepState.GET_ENERGY -> {
-                getEnergy()
+    override fun startWork() {
+
+    }
+
+    fun run(creep: Creep) {
+        when (creep.getState()) {
+            CreepState.GetEnergy -> {
+                getEnergy(creep = creep)
                 if (creep.store.getFreeCapacity() == 0) {
-                    say("Energy full")
-                    state = CreepState.DO_WORK
+                    creep.say("Energy full")
+                    creep.setState(CreepState.DoWork)
                 }
             }
 
-            CreepState.DO_WORK -> {
-                upgradeController()
+            CreepState.DoWork -> {
+                upgradeController(creep = creep)
             }
         }
     }
 
-    private fun getEnergy() {
+    private fun getEnergy(creep: Creep) {
         val storage = creep.room.storage
 
         if (storage == null || (storage.store.getUsedCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
-            val code = pickupEnergy()
+            val code = pickupEnergy(creep = creep)
             // If no energy could be found, try and use whatever energy we do have
             if (code == ERR_NOT_FOUND && creep.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
-                state = CreepState.DO_WORK
+                creep.setState(CreepState.DoWork)
             }
             return
         }
@@ -51,7 +64,7 @@ class UpdaterRole(creep: Creep) : AbstractRole(creep) {
         }
     }
 
-    private fun upgradeController() {
+    private fun upgradeController(creep: Creep) {
         val controller = creep.room.controller
 
         if (controller == null) {
@@ -64,15 +77,15 @@ class UpdaterRole(creep: Creep) : AbstractRole(creep) {
         if (status == ERR_NOT_IN_RANGE) {
             creep.moveTo(controller)
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            say("Out of energy")
-            state = CreepState.GET_ENERGY
+            creep.say("Out of energy")
+            creep.setState(CreepState.GetEnergy)
             return
         } else if (status != OK) {
-            say("Upgrade failed with code $status")
+            creep.say("Upgrade failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         }
     }
 }

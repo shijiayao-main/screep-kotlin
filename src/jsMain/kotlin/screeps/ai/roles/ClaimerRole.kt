@@ -1,5 +1,6 @@
 package screeps.ai.roles
 
+import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_IN_RANGE
 import screeps.api.FIND_CONSTRUCTION_SITES
@@ -17,7 +18,13 @@ import screeps.utils.memory.memory
 
 var FlagMemory.spawnerId: String? by memory()
 
-class ClaimerRole(creep: Creep) : AbstractRole(creep) {
+class ClaimerRole(
+    creepList: List<Creep>,
+    roomInfo: RoomInfo
+) : AbstractRole(
+    creepList = creepList,
+    roomInfo = roomInfo
+)  {
 
     companion object {
         private const val TAG = "ClaimerRole"
@@ -26,46 +33,42 @@ class ClaimerRole(creep: Creep) : AbstractRole(creep) {
     private val targetFlag: Flag? = Game.flags["NextRoom"]
     private val targetController: StructureController? = targetFlag?.room?.controller
 
-    override fun run() {
-        claimRoom()
-    }
-
     private fun moveToFlag() {
         if (targetFlag == null) {
             ScreepsLog.d(TAG, "No target room flag located!")
             return
         }
 
-        val path = getPathToTarget(creep.pos, targetFlag.pos)
-        creep.move(creep.pos.getDirectionTo(path[0]))
+//        val path = getPathToTarget(creep.pos, targetFlag.pos)
+//        creep.move(creep.pos.getDirectionTo(path[0]))
     }
 
     private fun claimRoom() {
-        if (targetController == null || targetController.room != creep.room) {
-            ScreepsLog.d(TAG, "Not in room with controller, navigating to $targetFlag instead")
-            moveToFlag()
-            return
-        }
+//        if (targetController == null || targetController.room != creep.room) {
+//            ScreepsLog.d(TAG, "Not in room with controller, navigating to $targetFlag instead")
+//            moveToFlag()
+//            return
+//        }
+//
+//        if (targetController.my) {
+//            ScreepsLog.d(TAG, "$targetController already claimed!")
+//            setupRoom(targetController.room)
+//            return
+//        }
 
-        if (targetController.my) {
-            ScreepsLog.d(TAG, "$targetController already claimed!")
-            setupRoom(targetController.room)
-            return
-        }
-
-        when (val code = creep.claimController(targetController)) {
-            OK -> {
-                ScreepsLog.d(TAG, "${targetController.room} claimed!")
-            }
-
-            ERR_NOT_IN_RANGE -> {
-                creep.moveTo(targetController)
-            }
-
-            else -> {
-                ScreepsLog.d(TAG, "Claiming ${targetController.room} failed: $code")
-            }
-        }
+//        when (val code = creep.claimController(targetController)) {
+//            OK -> {
+//                ScreepsLog.d(TAG, "${targetController.room} claimed!")
+//            }
+//
+//            ERR_NOT_IN_RANGE -> {
+//                creep.moveTo(targetController)
+//            }
+//
+//            else -> {
+//                ScreepsLog.d(TAG, "Claiming ${targetController.room} failed: $code")
+//            }
+//        }
     }
 
     private fun setupRoom(room: Room) {
@@ -82,5 +85,9 @@ class ClaimerRole(creep: Creep) : AbstractRole(creep) {
         if (code == OK) {
             ScreepsLog.d(TAG, "$room successfully initialized, construction may begin!")
         }
+    }
+
+    override fun startWork() {
+        claimRoom()
     }
 }

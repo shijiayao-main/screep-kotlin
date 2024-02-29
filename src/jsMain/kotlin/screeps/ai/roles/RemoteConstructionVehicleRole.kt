@@ -1,5 +1,6 @@
 package screeps.ai.roles
 
+import screeps.ai.entity.RoomInfo
 import screeps.api.ConstructionSite
 import screeps.api.Creep
 import screeps.api.ERR_FULL
@@ -16,13 +17,21 @@ import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
 import screeps.api.get
 import screeps.sdk.ScreepsLog
+import screeps.sdk.extensions.getState
+import screeps.sdk.extensions.setState
 import screeps.sdk.utils.getPathToTarget
 import screeps.utils.memory.memory
 import kotlin.math.abs
 
 var FlagMemory.complete: Boolean by memory { false }
 
-class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
+class RemoteConstructionVehicleRole(
+    creepList: List<Creep>,
+    roomInfo: RoomInfo,
+) : AbstractRole(
+    creepList = creepList,
+    roomInfo = roomInfo
+) {
 
     companion object {
         private const val TAG = "RemoteConstructionVehicleRole"
@@ -30,7 +39,11 @@ class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
 
     private val targetFlag: Flag? = Game.flags["NextRoom"]
 
-    override fun run() {
+    override fun startWork() {
+
+    }
+
+    fun run(creep: Creep) {
         if (targetFlag == null) {
             ScreepsLog.d(TAG, "No target to work with!")
         } else {
@@ -44,20 +57,21 @@ class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
                 return
             }
         }
+        val state = creep.getState()
 
-        if (state == CreepState.GET_ENERGY) {
-            getEnergy()
-        } else if (state == CreepState.DO_WORK) {
-            buildBuildings()
+        if (state == CreepState.GetEnergy) {
+            getEnergy(creep = creep)
+        } else if (state == CreepState.DoWork) {
+            buildBuildings(creep = creep)
         }
     }
 
-    private fun getEnergy() {
+    private fun getEnergy(creep: Creep) {
         val storage = creep.room.storage
 
         if (storage == null || (storage.store.getUsedCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
             ScreepsLog.d(TAG, "No storage in room, going to gather instead")
-            gatherEnergy()
+            gatherEnergy(creep = creep)
             return
         }
 
@@ -69,16 +83,19 @@ class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
         }
     }
 
-    private fun gatherEnergy() {
+    private fun gatherEnergy(creep: Creep) {
         val energySource =
             creep.room.find(FIND_SOURCES).sortedBy { abs(it.pos.x - creep.pos.x) + abs(it.pos.y - creep.pos.y) }
-                .firstOrNull { it.energy > 0 } ?: return say("No energy available!")
+                .firstOrNull { it.energy > 0 } ?: let {
+                creep.say("No energy available!")
+                return
+            }
 
         val code = creep.harvest(energySource)
 
         if (code == ERR_NOT_IN_RANGE) {
             if (creep.store.getUsedCapacity(RESOURCE_ENERGY) > 50) {
-                state = CreepState.DO_WORK
+                creep.setState(CreepState.DoWork)
             } else {
                 creep.moveTo(energySource)
             }
@@ -87,16 +104,16 @@ class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
         }
 
         if ((creep.store.getFreeCapacity(RESOURCE_ENERGY) ?: 0) <= 0) {
-            state = CreepState.DO_WORK
+            creep.setState(CreepState.DoWork)
         }
     }
 
-    private fun buildBuildings() {
-        val constructionSite = findConstructionSite()
+    private fun buildBuildings(creep: Creep) {
+        val constructionSite = findConstructionSite(creep)
 
         if (constructionSite == null) {
-            say("No available construction site!")
-            depositEnergy()
+            creep.say("No available construction site!")
+            depositEnergy(creep)
             return
         }
 
@@ -109,19 +126,21 @@ class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
                 creep.moveTo(constructionSite)
             }
         } else if (status == ERR_NOT_ENOUGH_ENERGY) {
-            say("Out of energy")
-            state = CreepState.GET_ENERGY
+            creep.say("Out of energy")
+            creep.setState(CreepState.GetEnergy)
             return
         } else if (status != OK) {
-            say("Build failed with code $status")
+            creep.say("Build failed with code $status")
         }
 
         if (creep.store.getCapacity(RESOURCE_ENERGY) <= 0) {
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         }
     }
 
-    private fun findConstructionSite(): ConstructionSite? {
+    private fun findConstructionSite(
+        creep: Creep
+    ): ConstructionSite? {
         return if (targetFlag != null && creep.room != targetFlag.room) {
             targetFlag.room?.find(FIND_CONSTRUCTION_SITES)?.firstOrNull()
         } else {
@@ -130,7 +149,9 @@ class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
         }
     }
 
-    private fun depositEnergy() {
+    private fun depositEnergy(
+        creep: Creep
+    ) {
         val spawner = creep.room.find(FIND_MY_SPAWNS).firstOrNull() ?: let {
             ScreepsLog.d(TAG, "No spawner to deposit energy into")
             return
@@ -141,19 +162,19 @@ class RemoteConstructionVehicleRole(creep: Creep) : AbstractRole(creep) {
         if (code == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawner)
         } else if (code == ERR_NOT_ENOUGH_ENERGY) {
-            say("Out of energy")
-            state = CreepState.GET_ENERGY
+            creep.say("Out of energy")
+            creep.setState(CreepState.GetEnergy)
             return
         } else if (code == ERR_FULL) {
             ScreepsLog.d(TAG, "Spawner full of energy, dropping energy for other creeps to use")
             creep.drop(RESOURCE_ENERGY)
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         } else if (code != OK) {
-            say("Transfer failed with code $code")
+            creep.say("Transfer failed with code $code")
         }
 
         if (creep.store.getUsedCapacity(RESOURCE_ENERGY) <= 0) {
-            state = CreepState.GET_ENERGY
+            creep.setState(CreepState.GetEnergy)
         }
     }
 }

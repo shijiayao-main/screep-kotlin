@@ -11,13 +11,13 @@ import screeps.api.Room
 import screeps.api.structures.StructureController
 import screeps.api.values
 import screeps.sdk.extensions.findEnemy
-import screeps.sdk.extensions.findMyConstruction
+import screeps.sdk.extensions.findMyConstructionMap
 import screeps.sdk.extensions.findMyCreeps
 import screeps.sdk.extensions.findNeedRepairPublicBuild
 import screeps.sdk.extensions.findNeedRepairSelfBuild
-import screeps.sdk.extensions.findSource
-import screeps.sdk.extensions.findSpawn
-import screeps.sdk.extensions.findTower
+import screeps.sdk.extensions.findSourceMap
+import screeps.sdk.extensions.findSpawnMap
+import screeps.sdk.extensions.findTowerMap
 
 fun getGameData(): List<RoomInfo> {
     val roomInfoList: MutableList<RoomInfo> = ArrayList()
@@ -36,31 +36,31 @@ fun getGameData(): List<RoomInfo> {
 }
 
 private fun getStructureData(room: Room): RoomStructureInfo {
-    val spawnList = room.findSpawn()
-    val sourceList = room.findSource()
+    val spawnMap = room.findSpawnMap()
+    val sourceMap = room.findSourceMap()
     val controller: StructureController? = room.controller
 
-    val myConstructionList = room.findMyConstruction()
+    val myConstructionMap = room.findMyConstructionMap()
     val needRepairSelfBuild = room.findNeedRepairSelfBuild()
     val needRepairPublicBuild = room.findNeedRepairPublicBuild()
 
-    val towerList = room.findTower()
+    val towerMap = room.findTowerMap()
 
     return RoomStructureInfo(
         controller = controller,
-        spawnList = spawnList,
-        sourceList = sourceList,
-        myConstructionList = myConstructionList,
+        spawnMap = spawnMap,
+        sourceMap = sourceMap,
+        myConstructionMap = myConstructionMap,
         selfNeedRepairBuildList = needRepairSelfBuild,
         publicNeedRepairBuildList = needRepairPublicBuild,
-        towerList = towerList
+        towerMap = towerMap
     )
 }
 
 private fun getCreepData(room: Room): RoomCreepInfo {
     val harvesterList: MutableList<Creep> = ArrayList()
     val builderList: MutableList<Creep> = ArrayList()
-    val upgraderList: MutableList<Creep> = ArrayList()
+    val updaterList: MutableList<Creep> = ArrayList()
     val transporterList: MutableList<Creep> = ArrayList()
     val maintainerList: MutableList<Creep> = ArrayList()
     val defenderList: MutableList<Creep> = ArrayList()
@@ -73,7 +73,7 @@ private fun getCreepData(room: Room): RoomCreepInfo {
         when (creepRole) {
             CreepRole.Harvester -> harvesterList.add(creep)
             CreepRole.Transporter -> transporterList.add(creep)
-            CreepRole.Updater -> upgraderList.add(creep)
+            CreepRole.Updater -> updaterList.add(creep)
             CreepRole.Builder -> builderList.add(creep)
             CreepRole.Maintainer -> maintainerList.add(creep)
             CreepRole.Defender -> defenderList.add(creep)
@@ -88,7 +88,7 @@ private fun getCreepData(room: Room): RoomCreepInfo {
     return RoomCreepInfo(
         harvesterList = harvesterList,
         builderList = builderList,
-        updaterList = upgraderList,
+        updaterList = updaterList,
         transporterList = transporterList,
         maintainerList = maintainerList,
         defenderList = defenderList,

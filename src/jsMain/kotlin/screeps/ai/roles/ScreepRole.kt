@@ -1,28 +1,31 @@
 package screeps.ai.roles
 
-enum class CreepRole(val namePrefix: String) {
+enum class CreepRole(
+    val role: Int,
+    val namePrefix: String
+) {
     // 未指定的
-    Unassigned(namePrefix = ""),
+    Unassigned(role = 0, namePrefix = ""),
 
     // 收集, 用于收集资源
-    Harvester(namePrefix = "harvester"),
+    Harvester(role = 1, namePrefix = "harvester"),
 
     // 运输, 用于运输资源
-    Transporter(namePrefix = "transporter"),
+    Transporter(role = 2, namePrefix = "transporter"),
 
     // 升级, 用于升级
-    Updater(namePrefix = "updater"),
+    Updater(role = 3, namePrefix = "updater"),
 
     // 建造, 用于建造
-    Builder(namePrefix = "builder"),
+    Builder(role = 4, namePrefix = "builder"),
 
     // 维护, 用于维护
-    Maintainer(namePrefix = "maintainer"),
+    Maintainer(role = 5, namePrefix = "maintainer"),
 
     // 用于防守敌人的进攻
-    Defender(namePrefix = "defender"),
-    Claimer(namePrefix = "claimer"),
-    RemoteConstruction(namePrefix = "remove_construction")
+    Defender(role = 6, namePrefix = "defender"),
+    Claimer(role = 7, namePrefix = "claimer"),
+    RemoteConstruction(role = 8, namePrefix = "remove_construction")
 }
 
 fun String?.getCreepRoleByName(): CreepRole {
@@ -33,6 +36,7 @@ fun String?.getCreepRoleByName(): CreepRole {
         startsWith(CreepRole.Updater.namePrefix) || startsWith("upgrader") -> {
             CreepRole.Updater
         }
+
         startsWith(CreepRole.Builder.namePrefix) -> CreepRole.Builder
         startsWith(CreepRole.Maintainer.namePrefix) -> CreepRole.Maintainer
         startsWith(CreepRole.Defender.namePrefix) -> CreepRole.Defender
