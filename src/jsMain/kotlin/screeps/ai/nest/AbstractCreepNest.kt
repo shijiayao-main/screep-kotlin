@@ -50,8 +50,7 @@ abstract class AbstractCreepNest(
         body: Array<BodyPartConstant>
     ): Boolean {
         val creepName = "${role.namePrefix}_${Game.time}"
-        val code = spawn.spawnCreep(body, creepName)
-        when (code) {
+        when (val code = spawn.spawnCreep(body, creepName)) {
             OK -> {
                 ScreepsLog.d(TAG, "spawning $creepName with body $body")
                 return true

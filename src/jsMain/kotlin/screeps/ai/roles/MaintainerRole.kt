@@ -26,9 +26,12 @@ class MaintainerRole(
     }
 
     override fun startWork() {
+        creepList.forEach { creep: Creep ->
+            run(creep = creep)
+        }
     }
 
-    fun run(creep: Creep) {
+    private fun run(creep: Creep) {
         when (val state = creep.getState()) {
             CreepState.GetEnergy -> {
                 getEnergy(creep)

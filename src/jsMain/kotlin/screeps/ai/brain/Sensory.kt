@@ -8,16 +8,22 @@ import screeps.ai.roles.getCreepRoleByName
 import screeps.api.Creep
 import screeps.api.Game
 import screeps.api.Room
+import screeps.api.structures.Structure
+import screeps.api.structures.StructureContainer
 import screeps.api.structures.StructureController
+import screeps.api.structures.StructureExtension
+import screeps.api.structures.StructureLink
+import screeps.api.structures.StructureTower
 import screeps.api.values
 import screeps.sdk.extensions.findEnemy
-import screeps.sdk.extensions.findMyConstructionMap
+import screeps.sdk.extensions.findMyConstructionList
 import screeps.sdk.extensions.findMyCreeps
+import screeps.sdk.extensions.findMyStructures
 import screeps.sdk.extensions.findNeedRepairPublicBuild
-import screeps.sdk.extensions.findNeedRepairSelfBuild
 import screeps.sdk.extensions.findSourceMap
 import screeps.sdk.extensions.findSpawnMap
-import screeps.sdk.extensions.findTowerMap
+import screeps.sdk.extensions.getRepairWidget
+import screeps.sdk.extensions.isNeedRepair
 
 fun getGameData(): List<RoomInfo> {
     val roomInfoList: MutableList<RoomInfo> = ArrayList()
@@ -40,20 +46,61 @@ private fun getStructureData(room: Room): RoomStructureInfo {
     val sourceMap = room.findSourceMap()
     val controller: StructureController? = room.controller
 
-    val myConstructionMap = room.findMyConstructionMap()
-    val needRepairSelfBuild = room.findNeedRepairSelfBuild()
+    val myStructureList = room.findMyStructures()
+    val myStructureMap: MutableMap<String, Structure> = HashMap()
+    val towerList: MutableMap<String, StructureTower> = HashMap()
+    val extensionStructureList: MutableList<StructureExtension> = ArrayList()
+    val linkStructureList: MutableList<StructureLink> = ArrayList()
+    val containerStructureList: MutableList<StructureContainer> = ArrayList()
+
+    val needRepairSelfBuildList: MutableList<Structure> = ArrayList()
+    myStructureList.forEach {
+        val key = it.id
+        myStructureMap[key] = it
+        when (it) {
+            is StructureTower -> {
+                towerList[key] = it
+            }
+
+            is StructureExtension -> {
+                extensionStructureList.add(it)
+            }
+
+            is StructureLink -> {
+                linkStructureList.add(it)
+            }
+
+            is StructureContainer -> {
+                containerStructureList.add(it)
+            }
+        }
+
+        if (it.isNeedRepair()) {
+            needRepairSelfBuildList.add(it)
+        }
+    }
+
+    val myConstructionMap = room.findMyConstructionList()
+
     val needRepairPublicBuild = room.findNeedRepairPublicBuild()
 
-    val towerMap = room.findTowerMap()
+    val structureStorage = room.storage
 
     return RoomStructureInfo(
         controller = controller,
         spawnMap = spawnMap,
+        structureStorage = structureStorage,
         sourceMap = sourceMap,
-        myConstructionMap = myConstructionMap,
-        selfNeedRepairBuildList = needRepairSelfBuild,
+        extensionStructureList = extensionStructureList,
+        linkStructureList = linkStructureList,
+        containerStructureList = containerStructureList,
+        myStructureMap = myStructureMap,
+        myConstructionList = myConstructionMap,
+        selfNeedRepairBuildList = needRepairSelfBuildList.sortedBy {
+            it.getRepairWidget()
+        },
         publicNeedRepairBuildList = needRepairPublicBuild,
-        towerMap = towerMap
+        towerMap = towerList
     )
 }
 

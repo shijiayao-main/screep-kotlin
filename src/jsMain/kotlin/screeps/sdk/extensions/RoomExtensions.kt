@@ -15,18 +15,16 @@ import screeps.api.Room
 import screeps.api.Source
 import screeps.api.structures.Structure
 import screeps.api.structures.StructureSpawn
-import screeps.api.structures.StructureTower
 
 fun Room.findDroppedResources(): List<Resource> {
     return find(FIND_DROPPED_RESOURCES).toList()
 }
 
-fun Room.findMyConstructionMap(): Map<String, ConstructionSite> {
-    val map: MutableMap<String, ConstructionSite> = HashMap()
-    find(FIND_MY_CONSTRUCTION_SITES).forEach {
-        map[it.id] = it
-    }
-    return map
+/**
+ * 所有属于您的建筑工地
+ */
+fun Room.findMyConstructionList(): List<ConstructionSite> {
+    return find(FIND_MY_CONSTRUCTION_SITES).toList()
 }
 
 fun Room.findSpawnMap(): Map<String, StructureSpawn> {
@@ -46,14 +44,10 @@ fun Room.findSourceMap(): Map<String, Source> {
 }
 
 /**
- * structureType == STRUCTURE_TOWER
+ * 获取所有自己的建筑
  */
-fun Room.findTowerMap(): Map<String, StructureTower> {
-    val map: MutableMap<String, StructureTower> = HashMap()
-    find(FIND_MY_STRUCTURES).filterIsInstance<StructureTower>().forEach {
-        map[it.id] = it
-    }
-    return map
+fun Room.findMyStructures(): List<Structure> {
+    return find(FIND_MY_STRUCTURES).toList()
 }
 
 fun Room.findMyCreeps(): List<Creep> {
@@ -73,23 +67,6 @@ fun Room.findNeedRepairPublicBuild(): List<Structure> {
         val maxHits: Int = structure.hitsMax
         val hitPercent: Float = hits / maxHits.toFloat()
         structure.isPublicBuild() && hitPercent < 0.8f
-    }.sortedBy { structure ->
-        val hits: Int = structure.hits
-        val maxHits: Int = structure.hitsMax
-        val hitPercent: Float = hits / maxHits.toFloat()
-        hitPercent
-    }
-}
-
-/**
- * 找出需要修复的个人建筑, 且生命值小于80%
- */
-fun Room.findNeedRepairSelfBuild(): List<Structure> {
-    return find(FIND_MY_STRUCTURES).filter { structure: Structure ->
-        val hits: Int = structure.hits
-        val maxHits: Int = structure.hitsMax
-        val hitPercent: Float = hits / maxHits.toFloat()
-        hitPercent < 0.8f
     }.sortedBy { structure ->
         val hits: Int = structure.hits
         val maxHits: Int = structure.hitsMax

@@ -67,7 +67,7 @@ class BuilderRole(
     private fun buildBuildings(creep: Creep) {
         creep.say("🚧 Building")
 
-        val constructionSite: ConstructionSite? = roomInfo.roomStructureInfo.myConstructionMap.values.firstOrNull()
+        val constructionSite: ConstructionSite? = roomInfo.roomStructureInfo.myConstructionList.values.firstOrNull()
 
         if (constructionSite == null) {
             // Fall back to repairing buildings if there are none that need to be built

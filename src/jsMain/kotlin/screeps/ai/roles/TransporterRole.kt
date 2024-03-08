@@ -40,9 +40,12 @@ class TransporterRole(
     }
 
     override fun startWork() {
+        creepList.forEach { creep: Creep ->  
+            run(creep = creep)
+        }
     }
 
-    fun run(creep: Creep) {
+    private fun run(creep: Creep) {
         val state = creep.getState()
         when (state) {
             CreepState.GetEnergy -> {
@@ -83,7 +86,7 @@ class TransporterRole(
         }
     }
 
-    private fun findFillableStructures(
+    private fun findFillStructures(
         creep: Creep
     ): List<StoreOwner> {
         val fillableStructures = creep.room.find(FIND_MY_STRUCTURES).filter {
@@ -107,7 +110,7 @@ class TransporterRole(
     }
 
     private fun storeEnergy(creep: Creep) {
-        val fillableStructures = findFillableStructures(creep = creep)
+        val fillableStructures = findFillStructures(creep = creep)
 
         if (fillableStructures.isEmpty()) {
             ScreepsLog.d(TAG, "No structures to fill with energy")

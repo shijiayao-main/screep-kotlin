@@ -29,6 +29,8 @@ class BuilderCreepNest(
     }
 
     private fun spawnBuilder(): Boolean {
+        // todo: 检查是否存在建筑工地, 不存在就不用创建builder
+
         val currentHarvesterCount = roomInfo.roomCreepInfo.harvesterList.size
         return spawnCreep(
             count = (minCount - currentHarvesterCount).coerceAtLeast(0),
