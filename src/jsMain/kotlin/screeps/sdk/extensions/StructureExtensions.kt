@@ -18,7 +18,7 @@ fun StoreOwner.energyIsFull(): Boolean {
 }
 
 fun Structure?.isNeedRepair(): Boolean {
-    val structure = this?: return false
+    val structure = this ?: return false
     val hits: Int = structure.hits
     val maxHits: Int = structure.hitsMax
     val hitPercent: Float = hits / maxHits.toFloat()

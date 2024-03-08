@@ -40,7 +40,7 @@ class TransporterRole(
     }
 
     override fun startWork() {
-        creepList.forEach { creep: Creep ->  
+        creepList.forEach { creep: Creep ->
             run(creep = creep)
         }
     }

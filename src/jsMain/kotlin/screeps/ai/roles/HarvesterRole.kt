@@ -111,7 +111,6 @@ class HarvesterRole(
             return spawn
         }
 
-
         return null
     }
 
