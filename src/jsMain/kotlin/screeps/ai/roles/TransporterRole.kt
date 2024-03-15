@@ -18,6 +18,7 @@ import screeps.api.structures.Structure
 import screeps.sdk.ScreepsLog
 import screeps.sdk.extensions.getState
 import screeps.sdk.extensions.setState
+import screeps.sdk.extensions.tryToStoreOwner
 import kotlin.math.abs
 
 val FILLABLE_STRUCTURES = setOf(
@@ -91,8 +92,8 @@ class TransporterRole(
     ): List<StoreOwner> {
         val fillableStructures = creep.room.find(FIND_MY_STRUCTURES).filter {
             it.structureType in FILLABLE_STRUCTURES
-        }.map {
-            it as StoreOwner
+        }.mapNotNull {
+            it.tryToStoreOwner()
         }.filter {
             (it.store.getFreeCapacity(RESOURCE_ENERGY) ?: 0) > 0
         }.groupBy {

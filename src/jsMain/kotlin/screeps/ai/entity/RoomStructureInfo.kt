@@ -15,6 +15,7 @@ import screeps.api.structures.StructureTower
  * @param myStructureMap 自己的建筑
  * @param extensionStructureList 用于建造更大的creep
  * @param linkStructureList
+ * @param structureStorage 资源容器
  */
 class RoomStructureInfo(
     val controller: StructureController?,
