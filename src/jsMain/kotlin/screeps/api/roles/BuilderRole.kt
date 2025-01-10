@@ -1,6 +1,5 @@
-package screeps.ai.roles
+package screeps.api.roles
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.ConstructionSite
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
@@ -8,6 +7,7 @@ import screeps.api.ERR_NOT_IN_RANGE
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
+import screeps.api.entity.RoomInfo
 import screeps.sdk.ScreepsLog
 import screeps.sdk.extensions.getState
 import screeps.sdk.extensions.setState
@@ -67,7 +67,7 @@ class BuilderRole(
     private fun buildBuildings(creep: Creep) {
         creep.say("🚧 Building")
 
-        val constructionSite: ConstructionSite? = roomInfo.roomStructureInfo.myConstructionList.values.firstOrNull()
+        val constructionSite: ConstructionSite? = roomInfo.roomStructureInfo.myConstructionList.firstOrNull()
 
         if (constructionSite == null) {
             // Fall back to repairing buildings if there are none that need to be built

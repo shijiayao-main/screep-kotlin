@@ -1,13 +1,13 @@
-package screeps.ai.brain
+package screeps.api.brain
 
-import screeps.ai.entity.RoomCreepInfo
-import screeps.ai.entity.RoomInfo
-import screeps.ai.entity.RoomStructureInfo
-import screeps.ai.roles.CreepRole
-import screeps.ai.roles.getCreepRoleByName
 import screeps.api.Creep
 import screeps.api.Game
 import screeps.api.Room
+import screeps.api.entity.RoomCreepInfo
+import screeps.api.entity.RoomInfo
+import screeps.api.entity.RoomStructureInfo
+import screeps.api.roles.CreepRole
+import screeps.api.roles.getCreepRoleByName
 import screeps.api.structures.Structure
 import screeps.api.structures.StructureContainer
 import screeps.api.structures.StructureController

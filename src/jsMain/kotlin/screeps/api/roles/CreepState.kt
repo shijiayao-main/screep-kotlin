@@ -1,4 +1,4 @@
-package screeps.ai.roles
+package screeps.api.roles
 
 enum class CreepState(val creepState: Int) {
     GetEnergy(0),

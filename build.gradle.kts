@@ -1,10 +1,13 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDceDsl
 import com.diffplug.gradle.spotless.SpotlessExtension
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
 plugins {
-    kotlin("multiplatform") version "1.8.22"
+    kotlin("multiplatform") version "2.0.0"
+    kotlin("plugin.js-plain-objects") version "2.0.0"
     id("com.diffplug.spotless") version "6.11.0"
 }
 
@@ -24,7 +27,7 @@ val host = screepsHost ?: "https://screeps.com"
 val minifiedJsDirectory: String = File(buildDir, "minified-js").absolutePath
 
 kotlin {
-    js(LEGACY) {
+    js {
         compilations.all {
             compileTaskProvider.configure {
                 destinationDirectory.file(minifiedJsDirectory)
@@ -35,16 +38,16 @@ kotlin {
             }
         }
         browser {
-            @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDistributionDsl::class)
-            distribution(Action {
-                directory = file(minifiedJsDirectory)
-            })
-            @OptIn(org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalDceDsl::class)
-            dceTask(Action {
+            @OptIn(ExperimentalDistributionDsl::class)
+            distribution {
+                outputDirectory.set(File(minifiedJsDirectory))
+            }
+            @OptIn(ExperimentalDceDsl::class)
+            dceTask {
                 keep(
                     "${project.name}.loop"
                 )
-            })
+            }
         }
         binaries.executable()
     }
@@ -52,7 +55,7 @@ kotlin {
     sourceSets {
         val jsMain by getting {
             dependencies {
-                implementation("io.github.exav:screeps-kotlin-types:1.13.0")
+                implementation("io.github.exav:screeps-kotlin-types:2.1.0")
             }
         }
     }

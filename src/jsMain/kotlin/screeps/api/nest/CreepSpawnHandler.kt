@@ -1,4 +1,4 @@
-package screeps.ai.nest
+package screeps.api.nest
 
 interface CreepSpawnHandler {
 

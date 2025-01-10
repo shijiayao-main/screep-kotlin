@@ -1,9 +1,9 @@
-package screeps.ai.roles
+package screeps.api.roles
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_IN_RANGE
 import screeps.api.FIND_HOSTILE_CREEPS
+import screeps.api.entity.RoomInfo
 
 class DefenderRole(
     creepList: List<Creep>,

@@ -1,6 +1,5 @@
-package screeps.ai.roles
+package screeps.api.roles
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.ERR_NOT_FOUND
@@ -14,6 +13,7 @@ import screeps.api.STRUCTURE_STORAGE
 import screeps.api.STRUCTURE_TOWER
 import screeps.api.StoreOwner
 import screeps.api.compareTo
+import screeps.api.entity.RoomInfo
 import screeps.api.structures.Structure
 import screeps.sdk.ScreepsLog
 import screeps.sdk.extensions.getState

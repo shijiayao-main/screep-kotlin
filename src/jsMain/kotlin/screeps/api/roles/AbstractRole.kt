@@ -1,6 +1,5 @@
-package screeps.ai.roles
+package screeps.api.roles
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_FOUND
 import screeps.api.ERR_NOT_IN_RANGE
@@ -9,6 +8,7 @@ import screeps.api.RESOURCE_ENERGY
 import screeps.api.STRUCTURE_CONTAINER
 import screeps.api.STRUCTURE_ROAD
 import screeps.api.ScreepsReturnCode
+import screeps.api.entity.RoomInfo
 import screeps.sdk.ScreepsLog
 import screeps.sdk.extensions.findDroppedResources
 import kotlin.math.abs

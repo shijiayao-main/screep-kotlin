@@ -1,4 +1,4 @@
-package screeps.ai.roles
+package screeps.api.roles
 
 enum class CreepRole(
     val role: Int,

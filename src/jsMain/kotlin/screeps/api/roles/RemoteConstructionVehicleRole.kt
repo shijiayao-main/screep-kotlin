@@ -1,6 +1,5 @@
-package screeps.ai.roles
+package screeps.api.roles
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.ConstructionSite
 import screeps.api.Creep
 import screeps.api.ERR_FULL
@@ -15,6 +14,7 @@ import screeps.api.Game
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.compareTo
+import screeps.api.entity.RoomInfo
 import screeps.api.get
 import screeps.sdk.ScreepsLog
 import screeps.sdk.extensions.getState

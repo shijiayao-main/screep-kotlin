@@ -1,6 +1,5 @@
-package screeps.ai.roles
+package screeps.api.roles
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.FIND_CONSTRUCTION_SITES
 import screeps.api.Flag
@@ -9,6 +8,7 @@ import screeps.api.Game
 import screeps.api.OK
 import screeps.api.Room
 import screeps.api.STRUCTURE_SPAWN
+import screeps.api.entity.RoomInfo
 import screeps.api.get
 import screeps.api.structures.StructureController
 import screeps.sdk.ScreepsLog

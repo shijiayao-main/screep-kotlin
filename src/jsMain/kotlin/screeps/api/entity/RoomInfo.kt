@@ -1,4 +1,4 @@
-package screeps.ai.entity
+package screeps.api.entity
 
 import screeps.api.Room
 

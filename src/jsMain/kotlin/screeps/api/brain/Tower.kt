@@ -1,10 +1,10 @@
-package screeps.ai.brain
+package screeps.api.brain
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.Creep
 import screeps.api.ERR_NOT_ENOUGH_ENERGY
 import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
+import screeps.api.entity.RoomInfo
 import screeps.api.structures.Structure
 import screeps.api.structures.StructureTower
 import screeps.sdk.ScreepsLog

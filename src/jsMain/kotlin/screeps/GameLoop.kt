@@ -1,16 +1,16 @@
 package screeps
 
-import screeps.ai.brain.getGameData
-import screeps.ai.brain.startRoom
-import screeps.ai.roles.CreepRole
 import screeps.api.Creep
 import screeps.api.Game
 import screeps.api.Memory
 import screeps.api.Record
+import screeps.api.brain.getGameData
+import screeps.api.brain.startRoom
 import screeps.api.component1
 import screeps.api.component2
 import screeps.api.get
 import screeps.api.iterator
+import screeps.api.roles.CreepRole
 import screeps.sdk.ScreepsLog
 import screeps.utils.isEmpty
 import screeps.utils.unsafe.delete

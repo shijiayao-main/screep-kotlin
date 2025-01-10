@@ -1,10 +1,10 @@
-package screeps.ai.nest
+package screeps.api.nest
 
-import screeps.ai.entity.RoomInfo
-import screeps.ai.roles.CreepRole
 import screeps.api.ATTACK
 import screeps.api.BodyPartConstant
 import screeps.api.MOVE
+import screeps.api.entity.RoomInfo
+import screeps.api.roles.CreepRole
 
 class DefenderCreepNest(
     creepNest: CreepSpawnHandler?,

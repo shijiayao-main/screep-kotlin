@@ -1,12 +1,12 @@
-package screeps.ai.brain
+package screeps.api.brain
 
-import screeps.ai.entity.RoomInfo
-import screeps.ai.nest.BuilderCreepNest
-import screeps.ai.nest.DefenderCreepNest
-import screeps.ai.nest.HarvesterCreepNest
-import screeps.ai.nest.MaintainerCreepNest
-import screeps.ai.nest.TransporterCreepNest
-import screeps.ai.nest.UpdaterCreepNest
+import screeps.api.entity.RoomInfo
+import screeps.api.nest.BuilderCreepNest
+import screeps.api.nest.DefenderCreepNest
+import screeps.api.nest.HarvesterCreepNest
+import screeps.api.nest.MaintainerCreepNest
+import screeps.api.nest.TransporterCreepNest
+import screeps.api.nest.UpdaterCreepNest
 
 // val BASE_BODY = Body(arrayOf(WORK, MOVE, CARRY))
 //

@@ -1,13 +1,13 @@
 package screeps.sdk.extensions
 
-import screeps.ai.roles.CreepRole
-import screeps.ai.roles.CreepState
-import screeps.ai.roles.toCreepState
 import screeps.api.Creep
 import screeps.api.CreepMemory
 import screeps.api.Resource
 import screeps.api.RoomPosition
 import screeps.api.Source
+import screeps.api.roles.CreepRole
+import screeps.api.roles.CreepState
+import screeps.api.roles.toCreepState
 import screeps.api.structures.Structure
 import screeps.api.structures.StructureContainer
 import screeps.api.structures.StructureExtension

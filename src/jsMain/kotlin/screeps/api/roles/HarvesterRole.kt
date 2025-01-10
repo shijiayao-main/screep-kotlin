@@ -1,6 +1,5 @@
-package screeps.ai.roles
+package screeps.api.roles
 
-import screeps.ai.entity.RoomInfo
 import screeps.api.CARRY
 import screeps.api.Creep
 import screeps.api.ERR_NOT_IN_RANGE
@@ -8,6 +7,7 @@ import screeps.api.OK
 import screeps.api.RESOURCE_ENERGY
 import screeps.api.Source
 import screeps.api.StoreOwner
+import screeps.api.entity.RoomInfo
 import screeps.api.structures.StructureSpawn
 import screeps.sdk.ScreepsLog
 import screeps.sdk.extensions.calculateDistance
@@ -106,13 +106,13 @@ class HarvesterRole(
         val storeOwner = if (targetId.isNullOrBlank()) {
             null
         } else {
-            roomInfo.roomStructureInfo.myStructureMap[targetId] .tryToStoreOwner()
+            roomInfo.roomStructureInfo.myStructureMap[targetId].tryToStoreOwner()
         }
 
         if (storeOwner != null) {
             return storeOwner
         } else {
-            val findStoreOwner = getNeedEnergyStoreOwner (
+            val findStoreOwner = getNeedEnergyStoreOwner(
                 creep = creep,
             ) ?: return null
 

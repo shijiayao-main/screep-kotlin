@@ -1,13 +1,13 @@
-package screeps.ai.brain
+package screeps.api.brain
 
-import screeps.ai.entity.RoomCreepInfo
-import screeps.ai.entity.RoomInfo
-import screeps.ai.roles.BuilderRole
-import screeps.ai.roles.DefenderRole
-import screeps.ai.roles.HarvesterRole
-import screeps.ai.roles.MaintainerRole
-import screeps.ai.roles.TransporterRole
-import screeps.ai.roles.UpdaterRole
+import screeps.api.entity.RoomCreepInfo
+import screeps.api.entity.RoomInfo
+import screeps.api.roles.BuilderRole
+import screeps.api.roles.DefenderRole
+import screeps.api.roles.HarvesterRole
+import screeps.api.roles.MaintainerRole
+import screeps.api.roles.TransporterRole
+import screeps.api.roles.UpdaterRole
 
 private const val TAG = "Room"
 

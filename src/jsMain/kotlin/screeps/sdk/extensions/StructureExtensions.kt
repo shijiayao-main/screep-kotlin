@@ -39,7 +39,7 @@ fun Structure.getRepairWidget(): Float {
 }
 
 fun Structure?.tryToStoreOwner(): StoreOwner? {
-    return when(this) {
+    return when (this) {
         is StructureExtension -> this
         is StructureStorage -> this
         is StructureLink -> this
